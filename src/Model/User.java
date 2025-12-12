@@ -1,23 +1,72 @@
 package Model;
 
-class User {
-    final int userId;
-    String name;
-    String email;
-    String passwordHash;
-    RoleType role;
-    List<Address> addresses = new ArrayList<>();
-    List<Integer> favorites = new ArrayList<>();
+import java.util.ArrayList;
+import java.util.List;
 
-    User(int id, String name, String email, String passwordPlain, RoleType role) {
-        this.userId = id;
+class User {
+    int userId;
+    String name;
+    String password;
+    RoleType roleType;
+
+    List<Address> addresses = new ArrayList<>();
+    List<Notification> notifications = new ArrayList<>();
+
+    static List<User> userDatabase = new ArrayList<>();
+    static int idCounter = 1;
+
+    public User(String name, String password, RoleType roleType) {
+        this.userId = idCounter++;
         this.name = name;
-        this.email = email;
-        this.passwordHash = PasswordUtil.hash(passwordPlain);
-        this.role = role;
+        this.password = password;
+        this.roleType = roleType;
     }
 
-    @Override public String toString() {
-        return String.format("User{id=%d,name='%s',email='%s',role=%s}", userId,name,email,role);
+    void createUser() {
+        userDatabase.add(this);
+        System.out.println("User " + name + " created with ID " + userId);
+    }
+
+    static User getUserById(int id) {
+        return userDatabase.stream()
+                .filter(u -> u.userId == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    void updateData(String newName, String newPassword) {
+        this.name = newName;
+        this.password = newPassword;
+        System.out.println("User " + userId + " updated.");
+    }
+
+    void deleteData() {
+        userDatabase.removeIf(u -> u.userId == this.userId);
+        System.out.println("User " + userId + " deleted.");
+    }
+
+    // Get notifications
+    void getNotification() {
+        System.out.println("Notifications for " + name + ":");
+        for (Notification n : notifications) {
+            System.out.println(" - " + n.message + (n.read ? " (read)" : " (unread)"));
+        }
+    }
+
+    void listProduct(String productName) {
+        System.out.println(name + " listed product: " + productName);
+    }
+
+    void makePayment(double amount) {
+        System.out.println(name + " made a payment of $" + amount);
+    }
+
+    void addAddress(Address address) {
+        addresses.add(address);
+        System.out.println("Address added for " + name);
+    }
+
+    void addNotification(String message) {
+        notifications.add(new Notification(message));
     }
 }
