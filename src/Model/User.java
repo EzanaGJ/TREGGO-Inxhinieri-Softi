@@ -3,7 +3,7 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
-class User {
+public class User {
     int userId;
     String name;
     String password;
@@ -12,7 +12,7 @@ class User {
     List<Address> addresses = new ArrayList<>();
     List<Notification> notifications = new ArrayList<>();
 
-    static List<User> userDatabase = new ArrayList<>();
+    public static List<User> userDatabase = new ArrayList<>();
     static int idCounter = 1;
 
     public User(String name, String password, RoleType roleType) {
