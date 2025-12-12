@@ -45,7 +45,6 @@ class User {
         System.out.println("User " + userId + " deleted.");
     }
 
-    // Get notifications
     void getNotification() {
         System.out.println("Notifications for " + name + ":");
         for (Notification n : notifications) {
