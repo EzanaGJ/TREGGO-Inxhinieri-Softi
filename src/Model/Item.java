@@ -32,7 +32,7 @@ public class Item {
 
     public void createListing() {
         itemDatabase.add(this);
-        System.out.println("Item " + itemId + " (" + title + ") listed for $" + price);
+        System.out.println("Item " + itemId + " (" + title + ") priced $" + price);
     }
 
     public static Item getItem(int id) {
