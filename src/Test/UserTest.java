@@ -11,7 +11,6 @@ class UserTest {
 
     @BeforeEach
     void setUp() {
-        // reset static data before each test
         User.userDatabase.clear();
     }
 
@@ -66,3 +65,4 @@ class UserTest {
         assertEquals("Welcome", u.notifications.get(0).message);
     }
 }
+
