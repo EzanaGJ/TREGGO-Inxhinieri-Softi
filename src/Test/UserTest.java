@@ -66,3 +66,4 @@ class UserTest {
         assertEquals("Welcome", u.notifications.get(0).message);
     }
 }
+
