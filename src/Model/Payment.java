@@ -1,5 +1,9 @@
 package Model;
 
+import Model.Enum.PaymentStatus;
+
+import java.util.*;
+
 class Payment {
     String method; // e.g., "Credit Card", "PayPal"
     double amount;

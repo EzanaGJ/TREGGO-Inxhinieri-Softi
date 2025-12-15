@@ -1,6 +1,6 @@
-package Model;
+package Model.Enum;
 
-enum OrderStatus {
+public enum OrderStatus {
     PENDING,
     PROCESSING,
     SHIPPED,

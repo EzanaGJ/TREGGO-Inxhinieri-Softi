@@ -1,16 +1,18 @@
 package Model;
 
+import Model.Enum.RoleType;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    int userId;
-    String name;
-    String password;
+    public String name;
+    public int userId;
+    public String password;
     RoleType roleType;
 
     List<Address> addresses = new ArrayList<>();
-    List<Notification> notifications = new ArrayList<>();
+    public List<Notification> notifications = new ArrayList<>();
 
     public static List<User> userDatabase = new ArrayList<>();
     static int idCounter = 1;
@@ -22,25 +24,25 @@ public class User {
         this.roleType = roleType;
     }
 
-    void createUser() {
+    public void createUser() {
         userDatabase.add(this);
         System.out.println("User " + name + " created with ID " + userId);
     }
 
-    static User getUserById(int id) {
+    public static User getUserById(int id) {
         return userDatabase.stream()
                 .filter(u -> u.userId == id)
                 .findFirst()
                 .orElse(null);
     }
 
-    void updateData(String newName, String newPassword) {
+    public void updateData(String newName, String newPassword) {
         this.name = newName;
         this.password = newPassword;
         System.out.println("User " + userId + " updated.");
     }
 
-    void deleteData() {
+    public void deleteData() {
         userDatabase.removeIf(u -> u.userId == this.userId);
         System.out.println("User " + userId + " deleted.");
     }
@@ -65,7 +67,7 @@ public class User {
         System.out.println("Address added for " + name);
     }
 
-    void addNotification(String message) {
+    public void addNotification(String message) {
         notifications.add(new Notification(message));
     }
 }

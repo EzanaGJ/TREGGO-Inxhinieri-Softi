@@ -1,5 +1,4 @@
-package Model;
-
+package Model.Enum;
  public enum Category {
     CLOTHING,
     SHOES,

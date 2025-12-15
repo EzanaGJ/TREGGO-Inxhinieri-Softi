@@ -1,5 +1,8 @@
 package Model;
 
+import Model.Enum.Category;
+import Model.Enum.Size;
+
 import java.util.ArrayList;
 import java.util.List;
 

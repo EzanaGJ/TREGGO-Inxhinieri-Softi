@@ -1,8 +1,8 @@
 package Model;
+import java.util.*;
 
-import java.util.Date;
-
-class Notification {
+public class Notification {
+    public String message;
     int notificationId;
     int userId;
     String type;
@@ -12,7 +12,7 @@ class Notification {
     static List<Notification> notificationDatabase = new ArrayList<>();
     static int idCounter = 1;
 
-    public Notification(int userId, String type, String messageText) {
+    public Notification(String type) {
         this.notificationId = idCounter++;
         this.userId = userId;
         this.type = type;

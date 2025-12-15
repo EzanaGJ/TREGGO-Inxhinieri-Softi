@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Enum.OrderStatus;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
