@@ -2,15 +2,15 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
-class Address {
-    int addressId;
+public class Address {
+    public int addressId;
     int userId;
     String country;
-    String city;
+    public String city;
     String postalCode;
     String street;
 
-    static List<Address> addressDatabase = new ArrayList<>();
+    public static List<Address> addressDatabase = new ArrayList<>();
     static int idCounter = 1;
 
     public Address(int userId, String country, String city, String postalCode, String street) {
@@ -22,12 +22,12 @@ class Address {
         this.street = street;
     }
 
-    void addAddress() {
+    public void addAddress() {
         addressDatabase.add(this);
         System.out.println("Address " + addressId + " added for user " + userId);
     }
 
-    static List<Address> getAddress(int userId) {
+    public static List<Address> getAddress(int userId) {
         List<Address> result = new ArrayList<>();
         for (Address addr : addressDatabase) {
             if (addr.userId == userId) {
@@ -38,7 +38,7 @@ class Address {
     }
 
 
-    void deleteAddress() {
+    public void deleteAddress() {
         addressDatabase.removeIf(addr -> addr.addressId == this.addressId);
         System.out.println("Address " + addressId + " deleted for user " + userId);
     }

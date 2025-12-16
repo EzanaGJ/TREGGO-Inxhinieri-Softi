@@ -1,12 +1,16 @@
 package Model;
 
-class Payment {
-    String method; // e.g., "Credit Card", "PayPal"
-    double amount;
-    Date timestamp;
+import Model.Enum.PaymentStatus;
+
+import java.util.*;
+
+public class Payment {
+    public String method; // e.g., "Credit Card", "PayPal"
+    public double amount;
+    public Date timestamp;
     PaymentStatus paymentStatus;
 
-    static List<Payment> paymentDatabase = new ArrayList<>();
+    public static List<Payment> paymentDatabase = new ArrayList<>();
 
     public Payment(String method, double amount) {
         this.method = method;
@@ -15,7 +19,7 @@ class Payment {
         this.paymentStatus = PaymentStatus.PENDING;
     }
 
-    void processPayment() {
+    public void processPayment() {
         // Simulate processing
         this.paymentStatus = PaymentStatus.COMPLETED;
         this.timestamp = new Date();
@@ -31,16 +35,16 @@ class Payment {
         }
     }
 
-    PaymentStatus getPaymentStatus() {
+    public PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
 
-    void setPaymentStatus(PaymentStatus status) {
+    public void setPaymentStatus(PaymentStatus status) {
         this.paymentStatus = status;
         System.out.println("Payment status updated to " + status);
     }
 
-    void refund() {
+    public void refund() {
         if (paymentStatus == PaymentStatus.COMPLETED) {
             paymentStatus = PaymentStatus.REFUNDED;
             System.out.println("Payment of $" + amount + " refunded successfully.");

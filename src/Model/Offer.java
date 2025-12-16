@@ -3,14 +3,14 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
-class Offer {
+public class Offer {
     int offerId;
     int itemId;
-    double offeredPrice;
-    String status;
+    public double offeredPrice;
+    public String status;
 
-    static List<Offer> offerDatabase = new ArrayList<>();
-    static int idCounter = 1;
+    public static List<Offer> offerDatabase = new ArrayList<>();
+    public static int idCounter = 1;
 
     public Offer(int itemId, double offeredPrice) {
         this.offerId = idCounter++;
@@ -19,12 +19,12 @@ class Offer {
         this.status = "pending";
     }
 
-    void makeOffer() {
+    public void makeOffer() {
         offerDatabase.add(this);
         System.out.println("Offer " + offerId + " made for item " + itemId + " at price $" + offeredPrice);
     }
 
-    void modifyOffer(double newPrice) {
+    public void modifyOffer(double newPrice) {
         if ("pending".equals(status)) {
             this.offeredPrice = newPrice;
             System.out.println("Offer " + offerId + " updated to $" + newPrice);
@@ -33,7 +33,7 @@ class Offer {
         }
     }
 
-    void acceptOffer() {
+    public void acceptOffer() {
         if ("pending".equals(status)) {
             status = "accepted";
             System.out.println("Offer " + offerId + " accepted.");
@@ -42,7 +42,7 @@ class Offer {
         }
     }
 
-    void declineOffer() {
+    public void declineOffer() {
         if ("pending".equals(status)) {
             status = "declined";
             System.out.println("Offer " + offerId + " declined.");
@@ -51,7 +51,7 @@ class Offer {
         }
     }
 
-    void cancelOffer() {
+    public void cancelOffer() {
         if ("pending".equals(status)) {
             status = "canceled";
             System.out.println("Offer " + offerId + " canceled.");
@@ -60,11 +60,11 @@ class Offer {
         }
     }
 
-    void updatePrice(double newPrice) {
+    public void updatePrice(double newPrice) {
         modifyOffer(newPrice);
     }
 
-    String getStatus() {
+    public String getStatus() {
         return status;
     }
 

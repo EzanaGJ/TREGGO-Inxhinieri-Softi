@@ -1,19 +1,22 @@
 package Model;
 
+import Model.Enum.Category;
+import Model.Enum.Size;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class Item {
-    int itemId;
-    String title;
+public class Item {
+    public int itemId;
+    public String title;
     String description;
-    double price;
+    public double price;
     Category category;
-    Size size;
+    public Size size;
     String brand;
-    boolean sold;
+    public boolean sold;
 
-    static List<Item> itemDatabase = new ArrayList<>();
+    public static List<Item> itemDatabase = new ArrayList<>();
     static int idCounter = 1;
 
     public Item(String title, String description, double price, Category category, Size size, String brand) {
@@ -27,19 +30,19 @@ class Item {
         this.sold = false;
     }
 
-    void createListing() {
+    public void createListing() {
         itemDatabase.add(this);
-        System.out.println("Item " + itemId + " (" + title + ") listed for $" + price);
+        System.out.println("Item " + itemId + " (" + title + ") priced $" + price);
     }
 
-    static Item getItem(int id) {
+    public static Item getItem(int id) {
         return itemDatabase.stream()
                 .filter(item -> item.itemId == id)
                 .findFirst()
                 .orElse(null);
     }
 
-    void modifyDetails(String newTitle, String newDescription, double newPrice, Category newCategory, Size newSize, String newBrand) {
+    public void modifyDetails(String newTitle, String newDescription, double newPrice, Category newCategory, Size newSize, String newBrand) {
         this.title = newTitle;
         this.description = newDescription;
         this.price = newPrice;
@@ -49,7 +52,7 @@ class Item {
         System.out.println("Item " + itemId + " details updated.");
     }
 
-    void deleteListing() {
+    public void deleteListing() {
         itemDatabase.removeIf(item -> item.itemId == this.itemId);
         System.out.println("Item " + itemId + " deleted.");
     }
@@ -66,7 +69,7 @@ class Item {
         return brand;
     }
 
-    void markAsSold() {
+    public void markAsSold() {
         this.sold = true;
         System.out.println("Item " + itemId + " marked as sold.");
     }
