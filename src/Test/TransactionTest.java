@@ -101,4 +101,3 @@ class TransactionTest {
         assertDoesNotThrow(t::validateTransaction);
     }
 }
-
