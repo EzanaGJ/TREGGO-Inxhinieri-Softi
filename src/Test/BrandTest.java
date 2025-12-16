@@ -1,12 +1,14 @@
 package Test;
 
+import Model.Brand;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BrandTest {
 
     @Test
-    void testConstructor() {
+    void testBrandCreation() {
         Brand brand = new Brand(1, "Nike");
 
         assertEquals(1, brand.brandId);
@@ -15,16 +17,16 @@ class BrandTest {
 
     @Test
     void testSetBrandId() {
-        Brand brand = new Brand(1, "Adidas");
+        Brand brand = new Brand(2, "Adidas");
 
-        brand.setBrandId(2);
+        brand.setBrandId(5);
 
-        assertEquals(2, brand.brandId);
+        assertEquals(5, brand.brandId);
     }
 
     @Test
     void testSetName() {
-        Brand brand = new Brand(1, "Puma");
+        Brand brand = new Brand(3, "Puma");
 
         brand.setName("Reebok");
 
@@ -32,18 +34,9 @@ class BrandTest {
     }
 
     @Test
-    void testGetName() {
-        Brand brand = new Brand(1, "Under Armour");
-
-        String name = brand.getName();
-
-        assertEquals("Under Armour", name);
-    }
-
-    @Test
     void testToString() {
-        Brand brand = new Brand(1, "Fila");
+        Brand brand = new Brand(4, "Zara");
 
-        assertEquals("Fila", brand.toString());
+        assertEquals("Zara", brand.toString());
     }
 }

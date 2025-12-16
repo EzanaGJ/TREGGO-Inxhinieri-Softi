@@ -4,23 +4,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-class Transaction {
-    int transactionId;
-    int orderId;
-    int paymentId;
-    double amount;
-    String paymentType;
-    Date createdAt;
+public class Transaction {
+    public int transactionId;
+    public int orderId;
+    public int paymentId;
+    public double amount;
+    public String paymentType;
+    public Date createdAt;
 
-    static Map<Integer, Transaction> transactionDB = new HashMap<>();
+    public static Map<Integer, Transaction> transactionDB = new HashMap<>();
 
-    void createTransaction() {
+    public void createTransaction() {
         this.createdAt = new Date();
         transactionDB.put(transactionId, this);
         System.out.println("Transaction created: ID = " + transactionId + ", Amount = " + amount);
     }
 
-    void updateTransaction() {
+    public void updateTransaction() {
         Transaction t = transactionDB.get(transactionId);
         if (t != null) {
             t.amount = this.amount;
@@ -31,7 +31,7 @@ class Transaction {
         }
     }
 
-    void deleteTransaction() {
+    public void deleteTransaction() {
         if (transactionDB.remove(transactionId) != null) {
             System.out.println("Transaction deleted.");
         } else {
@@ -39,12 +39,12 @@ class Transaction {
         }
     }
 
-    void linkToOrder(int orderId) {
+    public void linkToOrder(int orderId) {
         this.orderId = orderId;
         System.out.println("Linked to order " + orderId);
     }
 
-    void linkToPayment(int paymentId) {
+    public void linkToPayment(int paymentId) {
         this.paymentId = paymentId;
         System.out.println("Linked to payment " + paymentId);
     }
@@ -60,7 +60,7 @@ class Transaction {
     void getTimestamp() {
         System.out.println("Created at: " + createdAt);
     }
-    void validateTransaction() {
+    public void validateTransaction() {
         if (amount <= 0) {
             System.out.println("Invalid transaction: amount must be positive!");
         } else if (paymentType == null || paymentType.isEmpty()) {

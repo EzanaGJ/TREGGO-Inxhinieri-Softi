@@ -1,13 +1,13 @@
 package Model;
 
 import Model.Enum.RoleType;
-
+import Model.Notification;
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    public String name;
     public int userId;
+    public String name;
     public String password;
     RoleType roleType;
 
@@ -50,7 +50,7 @@ public class User {
     void getNotification() {
         System.out.println("Notifications for " + name + ":");
         for (Notification n : notifications) {
-            System.out.println(" - " + n.message + (n.read ? " (read)" : " (unread)"));
+            System.out.println(" - " + n.messageText + (n.read ? " (read)" : " (unread)"));
         }
     }
 
@@ -67,7 +67,9 @@ public class User {
         System.out.println("Address added for " + name);
     }
 
-    public void addNotification(String message) {
-        notifications.add(new Notification(message));
+    public void addNotification(String messageText) {
+        notifications.add(new Notification(this.userId, messageText));
     }
+
+
 }

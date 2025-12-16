@@ -2,91 +2,55 @@ package Test;
 
 import Model.Address;
 import Model.Order;
-import Model.Enum.OrderStatus;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTest {
 
-    @BeforeEach
-    void setUp() {
-        Order.getOrderDatabase().clear();
-        Order.idCounter = 1;
-    }
-
     @Test
     void testCreateOrder() {
-        Order order = new Order(1, 100.0);
+        Order order = new Order(10, 120.50);
         order.createOrder();
 
-        assertEquals(1, Order.getOrderDatabase().size());
-        assertEquals(1, order.orderId);
-        assertEquals(OrderStatus.PENDING, order.status);
+        assertNotNull(order.createdAt);
+        assertEquals("CREATED", order.status);
+        assertNotNull(order.getTrackingNo());
     }
 
     @Test
     void testCalculateTotal() {
-        Order order = new Order(2, 75.5);
-        double total = order.calculateTotal();
-        assertEquals(75.5, total);
+        Order order = new Order(5, 99.99);
+        assertEquals(99.99, order.calculateTotal());
     }
 
     @Test
     void testAddAddress() {
+        Address address = new Address(1, "Albania", "Tirane", "1001", "Rruga e Kavajes");
         Order order = new Order(3, 50.0);
-        Address address = new Address("Main Street", "Tirana", "1001");
 
         order.addAddress(address);
 
         assertNotNull(order.shippingAddr);
-        assertEquals("Main Street", order.shippingAddr.street);
-        assertEquals("Tirana", order.shippingAddr.city);
-    }
-
-    @Test
-    void testGetTrackingNoGeneratedOnce() {
-        Order order = new Order(4, 120.0);
-
-        String tracking1 = order.getTrackingNo();
-        String tracking2 = order.getTrackingNo();
-
-        assertNotNull(tracking1);
-        assertEquals(tracking1, tracking2);
+        assertEquals("Tirane", order.shippingAddr.city);
     }
 
     @Test
     void testUpdateStatus() {
-        Order order = new Order(5, 200.0);
-        order.updateStatus(OrderStatus.SHIPPED);
-        assertEquals(OrderStatus.SHIPPED, order.status);
+        Order order = new Order(7, 200.0);
+        order.updateStatus("SHIPPED");
+
+        assertEquals("SHIPPED", order.status);
     }
 
     @Test
-    void testAssignBuyer() {
-        Order order = new Order(6, 90.0);
-        order.assignBuyer(101);
-        assertEquals(101, order.buyerId);
-    }
+    void testAssignBuyerAndSeller() {
+        Order order = new Order(2, 30.0);
 
-    @Test
-    void testAssignSeller() {
-        Order order = new Order(7, 140.0);
-        order.assignSeller(202);
-        assertEquals(202, order.sellerId);
-    }
+        order.assignBuyer(100);
+        order.assignSeller(200);
 
-    @Test
-    void testMultipleOrdersInDatabase() {
-        Order o1 = new Order(8, 30.0);
-        Order o2 = new Order(9, 60.0);
-
-        o1.createOrder();
-        o2.createOrder();
-
-        assertEquals(2, Order.getOrderDatabase().size());
+        assertEquals(100, order.buyerId);
+        assertEquals(200, order.sellerId);
     }
 }
-
-

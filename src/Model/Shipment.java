@@ -4,17 +4,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-class Shipment {
-    int shipmentId;
-    int orderId;
-    String trackingNumber;
-    String courier;
-    Date shippedAt;
-    String status;
+public class Shipment {
+    public int shipmentId;
+    public int orderId;
+    public String trackingNumber;
+    public String courier;
+    public Date shippedAt;
+    public String status;
 
-    static Map<Integer, Shipment> shipmentDB = new HashMap<>();
+    public static Map<Integer, Shipment> shipmentDB = new HashMap<>();
 
-    void createShipment() {
+    public void createShipment() {
         this.shippedAt = new Date();
         this.status = "Created";
     }
