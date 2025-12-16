@@ -1,75 +1,25 @@
 package Model;
 
-import Model.Enum.OrderStatus;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 class Order {
-    int orderId;
-    int itemId;
+    final int orderId;
+    final int itemId;
+    final int buyerId;
+    final int sellerId;
     double price;
-    Address shippingAddr;
-    Date createdAt;
-    OrderStatus status;
-    int buyerId;
-    int sellerId;
-    String trackingNo;
+    String status; // created, paid, shipped, delivered, cancelled
+    Address shippingAddress;
+    Date created = new Date();
 
-    static List<Order> orderDatabase = new ArrayList<>();
-    static int idCounter = 1;
-
-    public Order(int itemId, double price) {
-        this.orderId = idCounter++;
+    Order(int id, int itemId, int buyerId, int sellerId, double price, Address addr){
+        this.orderId = id;
         this.itemId = itemId;
-        this.price = price;
-        this.createdAt = new Date();
-        this.status = OrderStatus.PENDING;
-    }
-
-    void createOrder() {
-        orderDatabase.add(this);
-        System.out.println("Order " + orderId + " created for item " + itemId + " at price $" + price);
-    }
-
-   double calculateTotal() {
-        System.out.println("Total for order " + orderId + " is $" + price);
-        return price;
-    }
-
-    void addAddress(Address a) {
-        this.shippingAddr = a;
-        System.out.println("Shipping address added for order " + orderId + ": " + a.street + ", " + a.city);
-    }
-
-    String getTrackingNo() {
-        if (trackingNo == null) {
-            trackingNo = "TRK" + orderId + new Date().getTime();
-        }
-        System.out.println("Tracking number for order " + orderId + ": " + trackingNo);
-        return trackingNo;
-    }
-
-    void updateStatus(OrderStatus newStatus) {
-        this.status = newStatus;
-        System.out.println("Order " + orderId + " status updated to " + newStatus);
-    }
-
-    void assignBuyer(int buyerId) {
         this.buyerId = buyerId;
-        System.out.println("Buyer " + buyerId + " assigned to order " + orderId);
-    }
-
-    void assignSeller(int sellerId) {
         this.sellerId = sellerId;
-        System.out.println("Seller " + sellerId + " assigned to order " + orderId);
+        this.price = price;
+        this.status = "created";
+        this.shippingAddress = addr;
     }
-
-    static void listAllOrders() {
-        System.out.println("All Orders:");
-        for (Order o : orderDatabase) {
-            System.out.println(" - Order " + o.orderId + ": item " + o.itemId + " $" + o.price + " status: " + o.status);
-        }
-    }
+    @Override public String toString(){ return String.format("Order{id=%d,item=%d,price=%.2f,status=%s}",orderId,itemId,price,status); }
 }
