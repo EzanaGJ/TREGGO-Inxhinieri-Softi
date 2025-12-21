@@ -1,20 +1,16 @@
 package Model;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Address {
-    public int addressId;
-    int userId;
-    String country;
+    private int addressId;
+    private int userId;
+    private String country;
     public String city;
-    String postalCode;
-    String street;
+    private String postalCode;
+    private String street;
 
-    public static List<Address> addressDatabase = new ArrayList<>();
-    static int idCounter = 1;
-
-    public Address(int userId, String country, String city, String postalCode, String street) {
-        this.addressId = idCounter++;
+    // Constructor used by DAO
+    public Address(int addressId, int userId, String country, String city, String postalCode, String street) {
+        this.addressId = addressId;
         this.userId = userId;
         this.country = country;
         this.city = city;
@@ -22,24 +18,17 @@ public class Address {
         this.street = street;
     }
 
-    public void addAddress() {
-        addressDatabase.add(this);
-        System.out.println("Address " + addressId + " added for user " + userId);
-    }
+    // Getters
+    public int getAddressId() { return addressId; }
+    public int getUserId() { return userId; }
+    public String getCountry() { return country; }
+    public String getCity() { return city; }
+    public String getPostalCode() { return postalCode; }
+    public String getStreet() { return street; }
 
-    public static List<Address> getAddress(int userId) {
-        List<Address> result = new ArrayList<>();
-        for (Address addr : addressDatabase) {
-            if (addr.userId == userId) {
-                result.add(addr);
-            }
-        }
-        return result;
-    }
-
-
-    public void deleteAddress() {
-        addressDatabase.removeIf(addr -> addr.addressId == this.addressId);
-        System.out.println("Address " + addressId + " deleted for user " + userId);
-    }
+    // Setters
+    public void setCountry(String country) { this.country = country; }
+    public void setCity(String city) { this.city = city; }
+    public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
+    public void setStreet(String street) { this.street = street; }
 }

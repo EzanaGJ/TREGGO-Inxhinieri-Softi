@@ -62,7 +62,7 @@ class UserTest {
         u.addNotification("Welcome");
 
         assertEquals(1, u.notifications.size());
-        assertEquals("Welcome", u.notifications.get(0).message);
+        assertEquals("Welcome", u.notifications.get(0).messageText);
     }
 }
 

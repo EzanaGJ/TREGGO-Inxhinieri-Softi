@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class Messages {
+public class Messages {
     int messageId;
-    int senderId;
-    int receiverId;
-    String content;
+    public int senderId;
+    public int receiverId;
+    public String content;
     Date timestamp;
-    boolean read;
+    public boolean read;
 
-    static List<Messages> messageDatabase = new ArrayList<>();
-    static int idCounter = 1;
+    public static List<Messages> messageDatabase = new ArrayList<>();
+    public static int idCounter = 1;
 
     public Messages(int senderId, int receiverId, String content) {
         this.messageId = idCounter++;
@@ -24,12 +24,12 @@ class Messages {
         this.read = false;
     }
 
-    void sendMessage() {
+    public void sendMessage() {
         messageDatabase.add(this);
         System.out.println("Message sent from user " + senderId + " to user " + receiverId + ": " + content);
     }
 
-    static List<Messages> getMessage(int userId) {
+    public static List<Messages> getMessage(int userId) {
         List<Messages> userMessages = new ArrayList<>();
         for (Messages m : messageDatabase) {
             if (m.receiverId == userId) {
@@ -39,12 +39,12 @@ class Messages {
         return userMessages;
     }
 
-    void markAsRead() {
+    public void markAsRead() {
         this.read = true;
         System.out.println("Message " + messageId + " marked as read.");
     }
 
-    void deleteMessage() {
+    public void deleteMessage() {
         messageDatabase.removeIf(m -> m.messageId == this.messageId);
         System.out.println("Message " + messageId + " deleted.");
     }

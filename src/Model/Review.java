@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class Review {
+public class Review {
     int reviewId;
-    int reviewedUserId;
-    int rating;
-    String comment;
-    Date createdAt;
+    public int reviewedUserId;
+    public int rating;
+    public String comment;
+    public Date createdAt;
 
-    static List<Review> reviewDatabase = new ArrayList<>();
-    static int idCounter = 1;
+    public static List<Review> reviewDatabase = new ArrayList<>();
+    public static int idCounter = 1;
 
     public Review(int reviewedUserId, int rating, String comment) {
         this.reviewId = idCounter++;
@@ -22,28 +22,28 @@ class Review {
         this.createdAt = new Date();
     }
 
-    void createReview() {
+    public void createReview() {
         reviewDatabase.add(this);
         System.out.println("Review " + reviewId + " created for user " + reviewedUserId);
     }
 
-    void updateReview(int newRating, String newComment) {
+    public void updateReview(int newRating, String newComment) {
         this.rating = newRating;
         this.comment = newComment;
         this.createdAt = new Date();
         System.out.println("Review " + reviewId + " updated.");
     }
 
-    void deleteReview() {
+    public void deleteReview() {
         reviewDatabase.removeIf(r -> r.reviewId == this.reviewId);
         System.out.println("Review " + reviewId + " deleted.");
     }
 
-    String getComment() {
+    public String getComment() {
         return comment;
     }
 
-    void setComment(String newComment) {
+    public void setComment(String newComment) {
         this.comment = newComment;
         this.createdAt = new Date();
         System.out.println("Comment for review " + reviewId + " updated.");
