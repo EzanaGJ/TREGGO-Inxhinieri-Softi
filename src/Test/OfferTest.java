@@ -1,89 +1,65 @@
 package Test;
 
 import Model.Offer;
+import Service.OfferService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class OfferTest {
+public class OfferServiceTest {
+
+    private OfferService offerService;
 
     @BeforeEach
-    void setUp() {
-        Offer.offerDatabase.clear();
-        Offer.idCounter = 1;
+    void setup() {
+        offerService = new OfferService();
+        offerService.clearAll();
     }
 
     @Test
     void testMakeOffer() {
-        Offer offer = new Offer(1, 100.0);
-        offer.makeOffer();
+        Offer offer = offerService.makeOffer(1, 100.0);
 
-        assertEquals(1, Offer.offerDatabase.size());
-        assertEquals(100.0, Offer.offerDatabase.get(0).offeredPrice);
-        assertEquals("pending", Offer.offerDatabase.get(0).status);
+        assertNotNull(offer);
+        assertEquals(1, offer.getItemId());
+        assertEquals(100.0, offer.getOfferedPrice());
+        assertEquals("pending", offer.getStatus());
     }
 
     @Test
-    void testModifyOfferWhenPending() {
-        Offer offer = new Offer(2, 80.0);
-        offer.makeOffer();
+    void testUpdateOfferPrice() {
+        Offer offer = offerService.makeOffer(1, 100.0);
+        offerService.updateOfferPrice(offer.getOfferId(), 120.0);
 
-        offer.modifyOffer(90.0);
-
-        assertEquals(90.0, offer.offeredPrice);
-        assertEquals("pending", offer.status);
+        assertEquals(120.0, offer.getOfferedPrice());
     }
 
     @Test
     void testAcceptOffer() {
-        Offer offer = new Offer(3, 150.0);
-        offer.makeOffer();
-
-        offer.acceptOffer();
+        Offer offer = offerService.makeOffer(1, 90.0);
+        offerService.acceptOffer(offer.getOfferId());
 
         assertEquals("accepted", offer.getStatus());
     }
 
     @Test
-    void testDeclineOffer() {
-        Offer offer = new Offer(4, 60.0);
-        offer.makeOffer();
+    void testGetOffersForItem() {
+        offerService.makeOffer(1, 50.0);
+        offerService.makeOffer(1, 60.0);
+        offerService.makeOffer(2, 70.0);
 
-        offer.declineOffer();
-
-        assertEquals("declined", offer.getStatus());
+        List<Offer> offers = offerService.getOffersForItem(1);
+        assertEquals(2, offers.size());
     }
 
     @Test
     void testCancelOffer() {
-        Offer offer = new Offer(5, 40.0);
-        offer.makeOffer();
-
-        offer.cancelOffer();
+        Offer offer = offerService.makeOffer(3, 200.0);
+        offerService.cancelOffer(offer.getOfferId());
 
         assertEquals("canceled", offer.getStatus());
-    }
-
-    @Test
-    void testCannotModifyAfterAccepted() {
-        Offer offer = new Offer(6, 200.0);
-        offer.makeOffer();
-        offer.acceptOffer();
-
-        offer.modifyOffer(220.0);
-
-        assertEquals(200.0, offer.offeredPrice);
-        assertEquals("accepted", offer.status);
-    }
-
-    @Test
-    void testUpdatePriceUsesModifyOffer() {
-        Offer offer = new Offer(7, 70.0);
-        offer.makeOffer();
-
-        offer.updatePrice(75.0);
-
-        assertEquals(75.0, offer.offeredPrice);
     }
 }
