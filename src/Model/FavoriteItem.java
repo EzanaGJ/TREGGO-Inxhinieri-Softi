@@ -3,13 +3,13 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
-class FavoriteItem {
+public class FavoriteItem {
     int favoriteId;
     int userId;
     int itemId;
 
-    static List<FavoriteItem> favoriteDatabase = new ArrayList<>();
-    static int idCounter = 1;
+    public static List<FavoriteItem> favoriteDatabase = new ArrayList<>();
+    public static int idCounter = 1;
 
     public FavoriteItem(int userId, int itemId) {
         this.favoriteId = idCounter++;
@@ -17,22 +17,22 @@ class FavoriteItem {
         this.itemId = itemId;
     }
 
-    void markAsFavorite() {
+    public void markAsFavorite() {
         favoriteDatabase.add(this);
         System.out.println("Item " + itemId + " marked as favorite by user " + userId);
     }
 
-    void removeFavorite() {
+    public void removeFavorite() {
         favoriteDatabase.removeIf(fav -> fav.userId == this.userId && fav.itemId == this.itemId);
         System.out.println("Item " + itemId + " removed from favorites for user " + userId);
     }
 
-    boolean isFavorite() {
+    public boolean isFavorite() {
         return favoriteDatabase.stream()
                 .anyMatch(fav -> fav.userId == this.userId && fav.itemId == this.itemId);
     }
 
-    static void clearFavorites(int userId) {
+    public static void clearFavorites(int userId) {
         favoriteDatabase.removeIf(fav -> fav.userId == userId);
         System.out.println("All favorites cleared for user " + userId);
     }

@@ -1,7 +1,7 @@
 package Model;
 
-class Brand {
-    int brandId;
+public class Brand {
+    public int brandId;
     String name;
 
     public Brand(int brandId, String name) {
@@ -9,15 +9,15 @@ class Brand {
         this.name = name;
     }
 
-    void setBrandId(int brandId) {
+    public void setBrandId(int brandId) {
         this.brandId = brandId;
     }
 
-    String getName() {
+    public String getName() {
         return this.name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
