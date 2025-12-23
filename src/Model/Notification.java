@@ -1,39 +1,55 @@
 package Model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Notification {
-    public int notificationId;
-    public int userId;
-    public String messageText;
-    public Date createdAt;
-    public boolean read;
+    private int notificationId;
+    private int userId;
+    private String type;
+    private String messageText;
+    private Date createdAt;
+    private boolean read;
 
-    public static List<Notification> notificationDatabase = new ArrayList<>();
-    public static int idCounter = 1;
-
-    public Notification(int userId, String messageText) {
-        this.notificationId = idCounter++;
+    public Notification(int userId,String type, String messageText) {
         this.userId = userId;
+        this.type = type;
         this.messageText = messageText;
         this.createdAt = new Date();
         this.read = false;
     }
-    public void createNotification() {
-        notificationDatabase.add(this);
-        System.out.println("Notification " + notificationId + " created for user " + userId + ": " + messageText);
+
+    public Notification(int notificationId, int userId, String type, String messageText,Date createdAt,boolean read) {
+        this.notificationId = notificationId;
+        this.userId = userId;
+        this.type=type;
+        this.messageText = messageText;
+        this.createdAt = createdAt;
+        this.read = read;
     }
 
-    public void markAsRead() {
-        this.read = true;
-        System.out.println("Notification " + notificationId + " marked as read.");
+    public int getNotificationId() {
+        return notificationId;
     }
 
-    public void deleteNotification() {
-        notificationDatabase.removeIf(n -> n.notificationId == this.notificationId);
-        System.out.println("Notification " + notificationId + " deleted.");
+    public int getUserId() {
+        return userId;
     }
 
-}
+    public String getType() {
+        return type;
+    }
+
+    public String getMessageText() {
+        return messageText;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+    }
+
+
