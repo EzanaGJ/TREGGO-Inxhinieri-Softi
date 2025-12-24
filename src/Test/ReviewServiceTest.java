@@ -30,7 +30,6 @@ public class ReviewServiceTest {
 
     @Test
     void testCreateAndGetReview() throws SQLException {
-
         Review r = reviewService.createReview(89, 3, 5, "Excellent seller!");
         Assertions.assertNotEquals(0, r.getReviewId());
 
