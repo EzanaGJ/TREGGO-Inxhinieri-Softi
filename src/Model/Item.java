@@ -25,7 +25,6 @@ public class Item {
         this.sold = false;
     }
 
-    // Getters & Setters
     public int getItemId() { return itemId; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
