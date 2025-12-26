@@ -73,6 +73,21 @@ public class NotificationServiceTest {
     }
 
     @Test
+    void testGetNotificationByIdNotFound() throws SQLException {
+        Notification found = notificationService.getNotificationById(999999);
+        assertNull(found);
+    }
+    @Test
+    void testCreateNotificationEmptyMessage() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() throws SQLException {
+                notificationService.createNotification(testUserId, "INFO", "");
+            }
+        });
+        assertEquals("Notification message cannot be empty", exception.getMessage());
+    }
+    @Test
     void testDeleteNotification() throws SQLException {
         Notification n = notificationService.createNotification(testUserId, "ALERT", "Delete me");
         notificationService.deleteNotification(n.getNotificationId());
@@ -89,7 +104,11 @@ public class NotificationServiceTest {
         List<Notification> notifications = notificationService.getNotificationsForUser(testUserId);
         Assertions.assertEquals(2, notifications.size());
     }
-
+    @Test
+    void testGetNotificationsForUserEmpty() throws SQLException {
+        List<Notification> notifications = notificationService.getNotificationsForUser(testUserId);
+        assertTrue(notifications.isEmpty());
+    }
     @Test
     void testMarkNotificationAsRead() throws SQLException {
         Notification n = notificationService.createNotification(testUserId, "INFO", "Read me");
@@ -111,4 +130,5 @@ public class NotificationServiceTest {
         });
         assertEquals("Notification message cannot be empty", exception.getMessage());
     }
+
 }
