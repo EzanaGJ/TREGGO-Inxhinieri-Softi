@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ReviewServiceTest {
 
     private ReviewService reviewService;
@@ -109,7 +112,49 @@ public class ReviewServiceTest {
         Assertions.assertEquals(5, found.getRating());
         Assertions.assertEquals("Excellent seller!", found.getComment());
     }
+    @Test
+    void testCreateReviewInvalidRatingTooLow() {
+        try {
+            reviewService.createReview(testUserId, testOrderId, 0, "Bad rating");
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        } catch (SQLException e) {
+            fail("Unexpected SQLException");
+        }
+    }
+    @Test
+    void testGetReviewByIdNonExisting() throws SQLException {
+        Review found = reviewService.getReviewById(999999);
+        assertNull(found);
+    }
+    @Test
+    void testCreateReviewInvalidRatingTooHigh() {
+        try {
+            reviewService.createReview(testUserId, testOrderId, 6, "High rating");
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        } catch (SQLException e) {
+            fail("Unexpected SQLException");
+        }
+    }
+    @Test
+    void testGetReviewById() throws SQLException {
+        Review r = reviewService.createReview(testUserId, testOrderId, 5, "Excellent seller!");
 
+        Review found = reviewService.getReviewById(r.getReviewId());
+
+        assertNotNull(found);
+        assertEquals(r.getReviewId(), found.getReviewId());
+        assertEquals(r.getReviewedUserId(), found.getReviewedUserId());
+        assertEquals(r.getOrderId(), found.getOrderId());
+        assertEquals(r.getRating(), found.getRating());
+        assertEquals(r.getComment(), found.getComment());
+    }
+    @Test
+    void testGetReviewByIdNotFound() throws SQLException {
+        Review r = reviewService.getReviewById(999999);
+        assertNull(r);
+    }
     @Test
     void testDeleteReview() throws SQLException {
         Review r = reviewService.createReview(testUserId, testOrderId, 2, "Not good");
@@ -126,6 +171,11 @@ public class ReviewServiceTest {
 
         List<Review> reviews = reviewService.getReviewsForUser(testUserId);
         Assertions.assertEquals(2, reviews.size());
+    }
+    @Test
+    void testGetReviewsForUserNoReviews() throws SQLException {
+        List<Review> reviews = reviewService.getReviewsForUser(testUserId);
+        assertTrue(reviews.isEmpty());
     }
 
     @Test
