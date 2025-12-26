@@ -1,72 +1,38 @@
 package Model;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Transaction {
-    public int transactionId;
-    public int orderId;
-    public int paymentId;
-    public double amount;
-    public String paymentType;
-    public Date createdAt;
+    private int transactionId;
+    private int orderId;
+    private int paymentId;
+    private double amount;
+    private String paymentType;
+    private Date createdAt;
 
-    public static Map<Integer, Transaction> transactionDB = new HashMap<>();
-
-    public void createTransaction() {
+    public Transaction(int transactionId, double amount, String paymentType) {
+        this.transactionId = transactionId;
+        this.amount = amount;
+        this.paymentType = paymentType;
         this.createdAt = new Date();
-        transactionDB.put(transactionId, this);
-        System.out.println("Transaction created: ID = " + transactionId + ", Amount = " + amount);
     }
 
-    public void updateTransaction() {
-        Transaction t = transactionDB.get(transactionId);
-        if (t != null) {
-            t.amount = this.amount;
-            t.paymentType = this.paymentType;
-            System.out.println("Transaction updated.");
-        } else {
-            System.out.println("Transaction not found!");
-        }
-    }
+    // Getters & Setters
+    public int getTransactionId() { return transactionId; }
+    public void setTransactionId(int transactionId) { this.transactionId = transactionId; }
 
-    public void deleteTransaction() {
-        if (transactionDB.remove(transactionId) != null) {
-            System.out.println("Transaction deleted.");
-        } else {
-            System.out.println("Transaction not found!");
-        }
-    }
+    public int getOrderId() { return orderId; }
+    public void setOrderId(int orderId) { this.orderId = orderId; }
 
-    public void linkToOrder(int orderId) {
-        this.orderId = orderId;
-        System.out.println("Linked to order " + orderId);
-    }
+    public int getPaymentId() { return paymentId; }
+    public void setPaymentId(int paymentId) { this.paymentId = paymentId; }
 
-    public void linkToPayment(int paymentId) {
-        this.paymentId = paymentId;
-        System.out.println("Linked to payment " + paymentId);
-    }
+    public double getAmount() { return amount; }
+    public void setAmount(double amount) { this.amount = amount; }
 
+    public String getPaymentType() { return paymentType; }
+    public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
 
-    void assignUser() {
-        System.out.println("User assigned to transaction " + transactionId);
-    }
-
-    void getAmount() {
-        System.out.println("Transaction amount: " + amount);
-    }
-    void getTimestamp() {
-        System.out.println("Created at: " + createdAt);
-    }
-    public void validateTransaction() {
-        if (amount <= 0) {
-            System.out.println("Invalid transaction: amount must be positive!");
-        } else if (paymentType == null || paymentType.isEmpty()) {
-            System.out.println("Invalid transaction: payment type required!");
-        } else {
-            System.out.println("Transaction is valid.");
-        }
-    }
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 }

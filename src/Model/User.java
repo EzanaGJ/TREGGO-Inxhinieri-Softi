@@ -1,75 +1,64 @@
 package Model;
 
-import Model.Enum.RoleType;
-import Model.Notification;
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
-    public int userId;
-    public String name;
-    public String password;
-    RoleType roleType;
+    private int userId;
+    private String name;
+    private String password;
+    private String roleType;
+    private String email;
 
-    List<Address> addresses = new ArrayList<>();
-    public List<Notification> notifications = new ArrayList<>();
-
-    public static List<User> userDatabase = new ArrayList<>();
-    static int idCounter = 1;
-
-    public User(String name, String password, RoleType roleType) {
-        this.userId = idCounter++;
+    public User(int userId, String name, String password, String roleType, String email) {
+        this.userId = userId;
         this.name = name;
         this.password = password;
         this.roleType = roleType;
+        this.email = email;
     }
 
-    public void createUser() {
-        userDatabase.add(this);
-        System.out.println("User " + name + " created with ID " + userId);
+    public User(String name, String password, String roleType,String email) {
+        this.name = name;
+        this.password = password;
+        this.roleType = roleType;
+        this.email = email;
     }
 
-    public static User getUserById(int id) {
-        return userDatabase.stream()
-                .filter(u -> u.userId == id)
-                .findFirst()
-                .orElse(null);
+    public int getUserId() {
+        return this.userId;
     }
 
-    public void updateData(String newName, String newPassword) {
-        this.name = newName;
-        this.password = newPassword;
-        System.out.println("User " + userId + " updated.");
+    public String getName() {
+        return this.name;
     }
 
-    public void deleteData() {
-        userDatabase.removeIf(u -> u.userId == this.userId);
-        System.out.println("User " + userId + " deleted.");
+    public String getPassword() {
+        return this.password;
     }
 
-    void getNotification() {
-        System.out.println("Notifications for " + name + ":");
-        for (Notification n : notifications) {
-            System.out.println(" - " + n.messageText + (n.read ? " (read)" : " (unread)"));
-        }
+    public String getRoleType() {
+        return this.roleType;
     }
 
-    void listProduct(String productName) {
-        System.out.println(name + " listed product: " + productName);
+    public String getEmail() {
+        return this.email;
     }
 
-    void makePayment(double amount) {
-        System.out.println(name + " made a payment of $" + amount);
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    void addAddress(Address address) {
-        addresses.add(address);
-        System.out.println("Address added for " + name);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void addNotification(String messageText) {
-        notifications.add(new Notification(this.userId, messageText));
+    public void setPassword(String password) {
+        this.password = password;
     }
 
+    public void setRoleType(String roleType) {
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 }

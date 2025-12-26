@@ -1,6 +1,7 @@
 package Test;
 
 import Model.Messages;
+import Service.MessageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,76 +9,52 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MessagesTest {
+class MessageServiceTest {
+
+    private MessageService messageService;
 
     @BeforeEach
-    void setUp() {
-        Messages.messageDatabase.clear();
-        Messages.idCounter = 1;
+    void setup() {
+        messageService = new MessageService();
+        messageService.clearAll();
     }
 
     @Test
     void testSendMessage() {
-        Messages msg = new Messages(1, 2, "Hello!");
-        msg.sendMessage();
+        Messages msg = messageService.sendMessage(1, 2, "Hello");
 
-        assertEquals(1, Messages.messageDatabase.size());
-        Messages stored = Messages.messageDatabase.get(0);
-        assertEquals(1, stored.senderId);
-        assertEquals(2, stored.receiverId);
-        assertEquals("Hello!", stored.content);
-        assertFalse(stored.read);
+        assertNotNull(msg);
+        assertEquals(1, msg.getSenderId());
+        assertEquals(2, msg.getReceiverId());
+        assertEquals("Hello", msg.getContent());
+        assertFalse(msg.isRead());
     }
 
     @Test
-    void testGetMessage() {
-        Messages m1 = new Messages(1, 2, "Hi");
-        Messages m2 = new Messages(2, 1, "Hey");
-        m1.sendMessage();
-        m2.sendMessage();
+    void testGetMessagesForUser() {
+        messageService.sendMessage(1, 2, "Hi");
+        messageService.sendMessage(3, 2, "Hey");
 
-        List<Messages> user2Messages = Messages.getMessage(2);
-        assertEquals(1, user2Messages.size());
-        assertEquals("Hi", user2Messages.get(0).content);
+        List<Messages> messages = messageService.getMessagesForUser(2);
 
-        List<Messages> user1Messages = Messages.getMessage(1);
-        assertEquals(1, user1Messages.size());
-        assertEquals("Hey", user1Messages.get(0).content);
+        assertEquals(2, messages.size());
     }
 
     @Test
     void testMarkAsRead() {
-        Messages msg = new Messages(1, 2, "Read me");
-        msg.sendMessage();
+        Messages msg = messageService.sendMessage(1, 2, "Test");
+        messageService.markAsRead(msg.getMessageId());
 
-        assertFalse(msg.read);
-        msg.markAsRead();
-        assertTrue(msg.read);
+        List<Messages> messages = messageService.getMessagesForUser(2);
+        assertTrue(messages.get(0).isRead());
     }
 
     @Test
     void testDeleteMessage() {
-        Messages msg1 = new Messages(1, 2, "Msg1");
-        Messages msg2 = new Messages(2, 1, "Msg2");
-        msg1.sendMessage();
-        msg2.sendMessage();
+        Messages msg = messageService.sendMessage(1, 2, "Delete me");
+        messageService.deleteMessage(msg.getMessageId());
 
-        assertEquals(2, Messages.messageDatabase.size());
-        msg1.deleteMessage();
-        assertEquals(1, Messages.messageDatabase.size());
-        assertEquals("Msg2", Messages.messageDatabase.get(0).content);
-    }
-
-    @Test
-    void testListMessages() {
-        Messages msg1 = new Messages(1, 2, "First");
-        Messages msg2 = new Messages(3, 2, "Second");
-        msg1.sendMessage();
-        msg2.sendMessage();
-
-        List<Messages> messages = Messages.getMessage(2);
-        assertEquals(2, messages.size());
-        assertEquals("First", messages.get(0).content);
-        assertEquals("Second", messages.get(1).content);
+        List<Messages> messages = messageService.getMessagesForUser(2);
+        assertTrue(messages.isEmpty());
     }
 }

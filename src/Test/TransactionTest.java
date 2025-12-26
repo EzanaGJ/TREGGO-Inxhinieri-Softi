@@ -1,103 +1,66 @@
 package Test;
 
+import DAO.TransactionDAO;
 import Model.Transaction;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import Service.TransactionService;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TransactionTest {
+class TransactionServiceTest {
+
+    private TransactionDAO transactionDAO;
+    private TransactionService transactionService;
 
     @BeforeEach
     void setUp() {
-        Transaction.transactionDB.clear();
+        transactionDAO = new TransactionDAO();
+        transactionDAO.clearDatabase();
+        transactionService = new TransactionService(transactionDAO);
     }
 
     @Test
     void testCreateTransaction() {
-        Transaction t = new Transaction();
-        t.transactionId = 1;
-        t.amount = 100.0;
-        t.paymentType = "Credit Card";
+        Transaction transaction = new Transaction(1, 100.0, "Credit Card");
+        transactionService.createTransaction(transaction);
 
-        t.createTransaction();
-
-        assertEquals(1, Transaction.transactionDB.size());
-        assertTrue(Transaction.transactionDB.containsKey(1));
-        assertNotNull(t.createdAt);
+        Transaction fromDB = transactionDAO.getTransaction(1);
+        assertNotNull(fromDB);
+        assertEquals(100.0, fromDB.getAmount());
+        assertEquals("Credit Card", fromDB.getPaymentType());
     }
 
     @Test
     void testUpdateTransaction() {
-        Transaction t = new Transaction();
-        t.transactionId = 2;
-        t.amount = 50.0;
-        t.paymentType = "PayPal";
-        t.createTransaction();
+        Transaction transaction = new Transaction(2, 50.0, "PayPal");
+        transactionService.createTransaction(transaction);
 
-        // ndryshojmë të dhënat
-        t.amount = 75.0;
-        t.paymentType = "Debit Card";
-        t.updateTransaction();
+        transaction.setAmount(75.0);
+        transactionService.updateTransaction(transaction);
 
-        Transaction updated = Transaction.transactionDB.get(2);
-        assertEquals(75.0, updated.amount);
-        assertEquals("Debit Card", updated.paymentType);
+        Transaction fromDB = transactionDAO.getTransaction(2);
+        assertEquals(75.0, fromDB.getAmount());
     }
 
     @Test
     void testDeleteTransaction() {
-        Transaction t = new Transaction();
-        t.transactionId = 3;
-        t.amount = 30.0;
-        t.paymentType = "Cash";
-        t.createTransaction();
+        Transaction transaction = new Transaction(3, 20.0, "Cash");
+        transactionService.createTransaction(transaction);
 
-        t.deleteTransaction();
-
-        assertFalse(Transaction.transactionDB.containsKey(3));
+        transactionService.deleteTransaction(3);
+        assertNull(transactionDAO.getTransaction(3));
     }
 
     @Test
-    void testLinkToOrder() {
-        Transaction t = new Transaction();
-        t.linkToOrder(101);
+    void testLinkOrderAndPayment() {
+        Transaction transaction = new Transaction(4, 150.0, "Card");
+        transactionService.createTransaction(transaction);
 
-        assertEquals(101, t.orderId);
-    }
+        transactionService.linkToOrder(transaction, 101);
+        transactionService.linkToPayment(transaction, 201);
 
-    @Test
-    void testLinkToPayment() {
-        Transaction t = new Transaction();
-        t.linkToPayment(202);
-
-        assertEquals(202, t.paymentId);
-    }
-
-    @Test
-    void testValidateTransactionValid() {
-        Transaction t = new Transaction();
-        t.amount = 120.0;
-        t.paymentType = "Credit Card";
-
-        assertDoesNotThrow(t::validateTransaction);
-    }
-
-    @Test
-    void testValidateTransactionInvalidAmount() {
-        Transaction t = new Transaction();
-        t.amount = -10.0;
-        t.paymentType = "PayPal";
-
-        assertDoesNotThrow(t::validateTransaction);
-    }
-
-    @Test
-    void testValidateTransactionMissingPaymentType() {
-        Transaction t = new Transaction();
-        t.amount = 50.0;
-        t.paymentType = "";
-
-        assertDoesNotThrow(t::validateTransaction);
+        Transaction fromDB = transactionDAO.getTransaction(4);
+        assertEquals(101, fromDB.getOrderId());
+        assertEquals(201, fromDB.getPaymentId());
     }
 }
