@@ -1,21 +1,16 @@
 package DAO;
 
 import Model.Payment;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 
-public class PaymentDAO {
-    private static final List<Payment> paymentDatabase = new ArrayList<>();
+public interface PaymentDAO {
 
-    public void addPayment(Payment payment) {
-        paymentDatabase.add(payment);
-    }
+    Payment create(Payment payment) throws SQLException;
 
-    public List<Payment> getAllPayments() {
-        return new ArrayList<>(paymentDatabase); // return copy
-    }
+    Payment getPaymentById(int id) throws SQLException;
 
-    public void clearDatabase() {
-        paymentDatabase.clear();
-    }
+    Payment update(Payment payment) throws SQLException;
+
+    void delete(int id) throws SQLException;
 }
+

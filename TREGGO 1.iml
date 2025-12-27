@@ -20,5 +20,14 @@
     </orderEntry>
     <orderEntry type="library" name="junit.jupiter" level="project" />
     <orderEntry type="library" name="mysql-connector-j-9.5.0" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/Lib/mysql-connector-j-9.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

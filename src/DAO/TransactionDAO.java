@@ -1,30 +1,15 @@
 package DAO;
 
 import Model.Transaction;
+import java.sql.SQLException;
 
-import java.util.HashMap;
-import java.util.Map;
+public interface TransactionDAO {
 
-public class TransactionDAO {
-    private static final Map<Integer, Transaction> transactionDB = new HashMap<>();
+    Transaction create(Transaction transaction) throws SQLException;
 
-    public void createTransaction(Transaction transaction) {
-        transactionDB.put(transaction.getTransactionId(), transaction);
-    }
+    Transaction getTransactionById(int id) throws SQLException;
 
-    public Transaction getTransaction(int transactionId) {
-        return transactionDB.get(transactionId);
-    }
+    Transaction update(Transaction transaction) throws SQLException;
 
-    public void updateTransaction(Transaction transaction) {
-        transactionDB.put(transaction.getTransactionId(), transaction);
-    }
-
-    public void deleteTransaction(int transactionId) {
-        transactionDB.remove(transactionId);
-    }
-
-    public void clearDatabase() {
-        transactionDB.clear();
-    }
+    void delete(int id) throws SQLException;
 }
