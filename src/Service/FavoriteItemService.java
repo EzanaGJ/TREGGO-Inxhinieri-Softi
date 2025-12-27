@@ -5,7 +5,7 @@ import Model.FavoriteItem;
 
 import java.util.List;
 
-public class FavoriteService {
+public class FavoriteItemService {
 
     private final FavoriteItemDAO favoriteDAO = new FavoriteItemDAO();
 
