@@ -14,7 +14,6 @@ public class MessagesService {
         this.messagesDAO = messagesDAO;
     }
 
-    // -------------------- SEND --------------------
     public Messages sendMessage(int senderId, int receiverId, String content) throws Exception {
         if (senderId <= 0 || receiverId <= 0) {
             throw new IllegalArgumentException("Invalid sender or receiver ID");
@@ -26,7 +25,6 @@ public class MessagesService {
         return messagesDAO.create(m);
     }
 
-    // -------------------- GET --------------------
     public Messages getMessageById(int id) {
         if (id <= 0) return null;
         try {
@@ -37,7 +35,6 @@ public class MessagesService {
         }
     }
 
-    // -------------------- UPDATE --------------------
     public Messages updateMessage(Messages message) throws Exception {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
@@ -45,7 +42,6 @@ public class MessagesService {
         return messagesDAO.update(message);
     }
 
-    // -------------------- DELETE --------------------
     public void deleteMessage(int id) {
         if (id <= 0) return;
         try {

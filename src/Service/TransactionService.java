@@ -13,7 +13,6 @@ public class TransactionService {
         this.transactionDAO = transactionDAO;
     }
 
-    // ---------------- CREATE ----------------
     public Transaction createTransaction(Transaction transaction) throws Exception {
         if (transaction == null) {
             throw new IllegalArgumentException("Transaction cannot be null");
@@ -24,7 +23,6 @@ public class TransactionService {
         return transactionDAO.create(transaction);
     }
 
-    // ---------------- GET ----------------
     public Transaction getTransactionById(int id) {
         if (id <= 0) return null;
         try {
@@ -34,7 +32,6 @@ public class TransactionService {
         }
     }
 
-    // ---------------- UPDATE ----------------
     public Transaction updateTransaction(Transaction transaction) throws Exception {
         if (transaction == null) {
             throw new IllegalArgumentException("Transaction cannot be null");
@@ -45,7 +42,6 @@ public class TransactionService {
         return transactionDAO.update(transaction);
     }
 
-    // ---------------- DELETE ----------------
     public void deleteTransaction(int id) {
         if (id <= 0) return;
         try {
