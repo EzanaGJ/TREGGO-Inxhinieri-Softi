@@ -1,7 +1,7 @@
 package Test;
 
 import DAO.ItemDAO;
-import DAO.JdbsItemDAO;
+import DAO.JdbcItemDAO;
 import Model.Item;
 import Service.ItemService;
 import db.DatabaseManager;
@@ -26,7 +26,7 @@ public class ItemServiceTest {
     @BeforeAll
     static void setup() throws Exception {
         connection = DatabaseManager.getConnection();
-        ItemDAO itemDAO = new JdbsItemDAO(connection);
+        ItemDAO itemDAO = new JdbcItemDAO(connection);
         itemService = new ItemService(itemDAO);
 
         String insertUser = "INSERT INTO user (name, password, email) VALUES (?, ?, ?)";
