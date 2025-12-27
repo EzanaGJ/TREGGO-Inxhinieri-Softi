@@ -1,47 +1,82 @@
 package Model;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 public class Shipment {
-    public int shipmentId;
-    public int orderId;
-    public String trackingNumber;
-    public String courier;
-    public Date shippedAt;
-    public String status;
 
-    public static Map<Integer, Shipment> shipmentDB = new HashMap<>();
+    private int shipmentId;
+    private int orderId;
+    private int addressId;
+    private String trackingNumber;
+    private String deliveryService;
+    private String status;
 
-    public void createShipment() {
-        this.shippedAt = new Date();
-        this.status = "Created";
-        if (this.trackingNumber == null || this.trackingNumber.isEmpty()) {
-            generateTrackingNumber();
-        }
-        shipmentDB.put(this.shipmentId, this);
+    // Constructor me ID (kur merret nga DB)
+    public Shipment(int shipmentId, int orderId, int addressId,
+                    String trackingNumber, String deliveryService, String status) {
+        this.shipmentId = shipmentId;
+        this.orderId = orderId;
+        this.addressId = addressId;
+        this.trackingNumber = trackingNumber;
+        this.deliveryService = deliveryService;
+        this.status = status;
     }
 
-    public void updateDetails(String courier) {
-        this.courier = courier;
-        updateStatus("Updated");
+    // Constructor pa ID (kur krijohet e re)
+    public Shipment(int orderId, int addressId,
+                    String trackingNumber, String deliveryService, String status) {
+        this.orderId = orderId;
+        this.addressId = addressId;
+        this.trackingNumber = trackingNumber;
+        this.deliveryService = deliveryService;
+        this.status = status;
     }
 
-    public void deleteShipment() {
-        shipmentDB.remove(this.shipmentId);
+    // Getters
+    public int getShipmentId() {
+        return shipmentId;
     }
 
-    public void generateTrackingNumber() {
-        this.trackingNumber = "TRK" + (1000 + this.shipmentId);
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void updateStatus(String newStatus) {
-        this.status = newStatus;
+    public int getAddressId() {
+        return addressId;
     }
 
-    public void getTrackingInfo() {
-        System.out.println("Tracking Number: " + this.trackingNumber);
-        System.out.println("Status: " + this.status);
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public String getDeliveryService() {
+        return deliveryService;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    // Setters
+    public void setShipmentId(int shipmentId) {
+        this.shipmentId = shipmentId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
+    public void setDeliveryService(String deliveryService) {
+        this.deliveryService = deliveryService;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -1,66 +1,70 @@
 package Model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 public class Order {
 
-    public int orderId;
-    int itemId;
-    double price;
-    public Address shippingAddr;
-    public Date createdAt;
-    public String status;
-    String trackingNo;
-    public int buyerId;
-    public int sellerId;
+    private int orderId;
+    private int userId;
+    private int addressId;
+    private String status;
+    private Date createdAt;
 
-    public static List<Order> orderDatabase = new ArrayList<>();
-    static int idCounter = 1;
-
-    // Konstruktor
-    public Order(int itemId, double price) {
-        this.orderId = idCounter++;
-        this.itemId = itemId;
-        this.price = price;
+    // Constructor me ID (nga DB)
+    public Order(int orderId, int userId, int addressId, String status, Date createdAt) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.addressId = addressId;
+        this.status = status;
+        this.createdAt = createdAt;
     }
 
-    // Krijimi i porosisë
-    public void createOrder() {
-        this.createdAt = new Date();
-        this.status = "CREATED";
-        this.trackingNo = UUID.randomUUID().toString();
-        orderDatabase.add(this);
-        System.out.println("Order " + orderId + " created");
-    }
-
-    // Llogaritja e totalit
-    public double calculateTotal() {
-        return price;
-    }
-
-    // Shtimi i adresës së dërgesës
-    public void addAddress(Address a) {
-        this.shippingAddr = a;
-    }
-
-    // Marrja e tracking number
-    public String getTrackingNo() {
-        return trackingNo;
-    }
-
-    // Përditësimi i statusit
-    public void updateStatus(String status) {
+    // Constructor pa ID (për insert)
+    public Order(int userId, int addressId, String status) {
+        this.userId = userId;
+        this.addressId = addressId;
         this.status = status;
     }
 
-    public void assignBuyer(int buyerId) {
-        this.buyerId = buyerId;
+    // Getters
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void assignSeller(int sellerId) {
-        this.sellerId = sellerId;
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    // Setters
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

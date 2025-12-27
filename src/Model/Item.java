@@ -34,8 +34,6 @@ public class Item {
         this.createdAt = createdAt;
     }
 
-    public Item(int userId, String testItem, String testDescription, double v) {
-    }
 
     public int getItemId() { return itemId; }
     public int getUserId() { return userId; }

@@ -6,17 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JdbsItemDAO implements ItemDAO {
+public class JdbcItemDAO implements ItemDAO {
 
     private final Connection connection;
 
-    public JdbsItemDAO(Connection connection) {
+    public JdbcItemDAO(Connection connection) {
         this.connection = connection;
-    }
-
-    public JdbsItemDAO() {
-
-        connection = null;
     }
 
     @Override
