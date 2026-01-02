@@ -5,10 +5,12 @@ import db.DatabaseManager;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class JdbcOrderDAO implements OrderDAO {
+public abstract class JdbcOrderDAO implements OrderDAO {
+
+    public JdbcOrderDAO(Connection connection) {
+    }
 
     @Override
     public Order create(Order order) throws SQLException {
@@ -101,7 +103,7 @@ public class JdbcOrderDAO implements OrderDAO {
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public boolean delete(int id) throws SQLException {
         String sql = "DELETE FROM orders WHERE order_id = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -110,5 +112,11 @@ public class JdbcOrderDAO implements OrderDAO {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
+        return false;
     }
 }
+
+
+
+
+
