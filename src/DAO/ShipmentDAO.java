@@ -1,5 +1,6 @@
 package DAO;
 
+
 import Model.Shipment;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,3 +17,6 @@ public interface ShipmentDAO {
 
     void delete(int id) throws SQLException;
 }
+
+
+
