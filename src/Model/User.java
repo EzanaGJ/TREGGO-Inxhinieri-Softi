@@ -54,8 +54,8 @@ public class User {
         this.password = password;
     }
 
-    public void setRoleType(String roleType) {
-    }
+    public void setRoleType(String roleType) { this.roleType = roleType; }
+
 
     public void setEmail(String email) {
         this.email = email;

@@ -158,5 +158,51 @@ public class UserServiceTest {
         assertTrue(actions.contains("LIST_PRODUCT:" + u.getUserId() + ":Cool Shirt"));
         assertTrue(actions.contains("MAKE_PAYMENT:" + u.getUserId() + ":49.99"));
     }
+    @Test
+    void testLoginSuccess() throws SQLException {
+        User u = userService.createUser("LoginUser", "mypassword", "USER", "test_login@example.com");
+
+        try {
+            User loggedIn = userService.login("test_login@example.com", "mypassword");
+            assertNotNull(loggedIn);
+            assertEquals(u.getUserId(), loggedIn.getUserId());
+
+            var actions = userService.getActions();
+            assertTrue(actions.contains("LOGIN:" + u.getUserId()));
+        } catch (IllegalArgumentException e) {
+            fail("Login should have succeeded but threw exception: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testLoginWrongPassword() throws SQLException {
+        userService.createUser("LoginUser2", "mypassword", "USER", "test_login2@example.com");
+
+        try {
+            userService.login("test_login2@example.com", "wrongpass");
+            fail("Expected IllegalArgumentException for wrong password");
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    @Test
+    void testLoginEmailNotFound() throws SQLException {
+        try {
+            userService.login("nonexistent@example.com", "pass");
+            fail("Expected IllegalArgumentException for non-existing email");
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    @Test
+    void testLogout() throws SQLException {
+        User u = userService.createUser("LogoutUser", "pass123", "USER", "test_logout@example.com");
+
+        userService.logout(u);
+
+        var actions = userService.getActions();
+        assertTrue(actions.contains("LOGOUT:" + u.getUserId()));
+    }
 
 }

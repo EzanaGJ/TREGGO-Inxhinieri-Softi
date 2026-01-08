@@ -88,4 +88,29 @@ public class JdbcUserDAO implements UserDAO {
             ps.executeUpdate();
         }
     }
+    @Override
+    public User getUserByEmail(String email) throws SQLException {
+        String sql = "SELECT user_id, name, password, role_type, email FROM user WHERE email = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("user_id"),
+                            rs.getString("name"),
+                            rs.getString("password"),
+                            rs.getString("role_type"),
+                            rs.getString("email")
+                    );
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

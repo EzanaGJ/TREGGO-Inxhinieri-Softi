@@ -12,4 +12,6 @@ public interface UserDAO {
     User update(User user) throws SQLException;
 
     void delete(int id) throws SQLException;
+
+    User getUserByEmail(String email) throws SQLException;
 }

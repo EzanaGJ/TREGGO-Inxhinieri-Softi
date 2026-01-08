@@ -45,6 +45,25 @@ public class UserService {
     public void deleteUser(int id) throws SQLException {
         userDao.delete(id);
     }
+    public User login(String email, String password) throws SQLException {
+        if (email == null || email.isBlank() || password == null || password.isBlank())
+            throw new IllegalArgumentException("Email and password cannot be empty");
+
+        User user = userDao.getUserByEmail(email);
+        if (user == null)
+            throw new IllegalArgumentException("No user found with this email");
+
+        if (!user.getPassword().equals(password)) // For real apps, use password hashing
+            throw new IllegalArgumentException("Incorrect password");
+
+        actions.add("LOGIN:" + user.getUserId());
+        return user; // Successfully logged in
+    }
+
+    public void logout(User user) {
+        if (user == null) throw new IllegalArgumentException("User cannot be null");
+        actions.add("LOGOUT:" + user.getUserId());
+    }
 
     public void listProduct(User user, String productName) {
         if (user == null)
