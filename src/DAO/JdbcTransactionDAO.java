@@ -14,7 +14,7 @@ public class JdbcTransactionDAO implements TransactionDAO {
             VALUES (?, ?, ?)
         """;
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, t.getPaymentId());
@@ -34,7 +34,7 @@ public class JdbcTransactionDAO implements TransactionDAO {
     public Transaction getTransactionById(int id) throws SQLException {
         String sql = "SELECT * FROM transaction WHERE transaction_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -62,7 +62,7 @@ public class JdbcTransactionDAO implements TransactionDAO {
             WHERE transaction_id = ?
         """;
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setDouble(1, t.getAmount());
@@ -78,7 +78,7 @@ public class JdbcTransactionDAO implements TransactionDAO {
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM transaction WHERE transaction_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();

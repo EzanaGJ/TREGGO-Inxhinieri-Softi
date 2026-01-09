@@ -33,7 +33,7 @@ public class ReviewServiceTest {
         reviewService = new ReviewService(new JdbcReviewDAO());
         userService = new UserService(new JdbcUserDAO());
 
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getInstance().getConnection()) {
 
 
             try (PreparedStatement psUser = conn.prepareStatement(
@@ -87,7 +87,7 @@ public class ReviewServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
 

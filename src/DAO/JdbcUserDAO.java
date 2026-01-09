@@ -15,7 +15,7 @@ public class JdbcUserDAO implements UserDAO {
     public User create(User user) throws SQLException {
         String sql = "INSERT INTO user (name, password, role_type, email) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, user.getName());
@@ -38,7 +38,7 @@ public class JdbcUserDAO implements UserDAO {
     public User getUserById(int id) throws SQLException {
         String sql = "SELECT user_id, name, password, role_type, email FROM user WHERE user_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -63,7 +63,7 @@ public class JdbcUserDAO implements UserDAO {
     public User update(User user) throws SQLException {
         String sql = "UPDATE user SET name = ?, password = ?, role_type = ?, email = ? WHERE user_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getName());
@@ -81,7 +81,7 @@ public class JdbcUserDAO implements UserDAO {
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM user WHERE user_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -92,7 +92,7 @@ public class JdbcUserDAO implements UserDAO {
     public User getUserByEmail(String email) throws SQLException {
         String sql = "SELECT user_id, name, password, role_type, email FROM user WHERE email = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, email);

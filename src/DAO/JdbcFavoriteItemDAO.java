@@ -12,7 +12,7 @@ public class JdbcFavoriteItemDAO implements FavoriteItemDAO {
     @Override
     public FavoriteItem create(FavoriteItem favorite) throws SQLException {
         String sql = "INSERT INTO favorites (user_id, item_id) VALUES (?, ?)";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, favorite.getUserId());
             ps.setInt(2, favorite.getItemId());
@@ -24,7 +24,7 @@ public class JdbcFavoriteItemDAO implements FavoriteItemDAO {
     @Override
     public FavoriteItem getFavorite(int userId, int itemId) throws SQLException {
         String sql = "SELECT user_id, item_id, created_at FROM favorites WHERE user_id = ? AND item_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, itemId);
@@ -46,7 +46,7 @@ public class JdbcFavoriteItemDAO implements FavoriteItemDAO {
     public List<FavoriteItem> getFavoritesByUser(int userId) throws SQLException {
         String sql = "SELECT user_id, item_id, created_at FROM favorites WHERE user_id = ?";
         List<FavoriteItem> favorites = new ArrayList<>();
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
 
@@ -66,7 +66,7 @@ public class JdbcFavoriteItemDAO implements FavoriteItemDAO {
     @Override
     public void delete(int userId, int itemId) throws SQLException {
         String sql = "DELETE FROM favorites WHERE user_id = ? AND item_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, itemId);

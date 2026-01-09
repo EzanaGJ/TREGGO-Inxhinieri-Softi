@@ -24,7 +24,7 @@ public class TransactionServiceTest {
 
     @BeforeAll
     static void setupAll() {
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getInstance().getConnection()) {
 
             // Shto user dhe merr id
             int userId;
@@ -72,7 +72,7 @@ public class TransactionServiceTest {
 
     @AfterAll
     static void cleanupAll() {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement st = conn.createStatement()) {
 
             st.execute("DELETE FROM transaction");

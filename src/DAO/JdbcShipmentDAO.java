@@ -14,7 +14,7 @@ public class JdbcShipmentDAO implements ShipmentDAO {
         String sql = "INSERT INTO shipment (order_id, address_id, tracking_number, delivery_service, status) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, shipment.getOrderId());
@@ -39,7 +39,7 @@ public class JdbcShipmentDAO implements ShipmentDAO {
     public Shipment getShipmentById(int id) throws SQLException {
         String sql = "SELECT * FROM shipment WHERE shipment_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -66,7 +66,7 @@ public class JdbcShipmentDAO implements ShipmentDAO {
         String sql = "SELECT * FROM shipment WHERE order_id = ?";
         List<Shipment> shipments = new ArrayList<>();
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, orderId);
@@ -93,7 +93,7 @@ public class JdbcShipmentDAO implements ShipmentDAO {
         String sql = "UPDATE shipment SET order_id = ?, address_id = ?, tracking_number = ?, " +
                 "delivery_service = ?, status = ? WHERE shipment_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, shipment.getOrderId());
@@ -113,7 +113,7 @@ public class JdbcShipmentDAO implements ShipmentDAO {
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM shipment WHERE shipment_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);

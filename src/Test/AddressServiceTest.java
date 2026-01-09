@@ -21,7 +21,7 @@ public class AddressServiceTest {
     void setUp() throws SQLException {
         addressService = new AddressService(new JdbcAddressDAO());
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM addresses");
@@ -34,7 +34,7 @@ public class AddressServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM addresses");

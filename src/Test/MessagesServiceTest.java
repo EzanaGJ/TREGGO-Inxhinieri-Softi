@@ -28,7 +28,7 @@ public class MessagesServiceTest {
     static void setup() {
         service = new MessagesService(new JdbcMessagesDAO());
 
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getInstance().getConnection()) {
             // INSERT sender
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO user (name, password) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
@@ -70,7 +70,7 @@ public class MessagesServiceTest {
 
     @AfterAll
     static void cleanupAll() {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("DELETE FROM messages");
             stmt.executeUpdate("DELETE FROM user");

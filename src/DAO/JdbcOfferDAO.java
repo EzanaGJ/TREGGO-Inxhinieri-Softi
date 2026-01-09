@@ -12,7 +12,7 @@ public class JdbcOfferDAO implements OfferDAO {
         if (offer == null) throw new IllegalArgumentException("Offer cannot be null");
 
         String sql = "INSERT INTO offer (user_id, item_id, proposed_price, status) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, offer.getUserId());
@@ -33,7 +33,7 @@ public class JdbcOfferDAO implements OfferDAO {
     @Override
     public Offer getOfferById(int id) throws SQLException {
         String sql = "SELECT * FROM offer WHERE offer_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -54,7 +54,7 @@ public class JdbcOfferDAO implements OfferDAO {
     @Override
     public Offer update(Offer offer) throws SQLException {
         String sql = "UPDATE offer SET proposed_price=?, status=? WHERE offer_id=?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setDouble(1, offer.getOfferedPrice());
@@ -69,7 +69,7 @@ public class JdbcOfferDAO implements OfferDAO {
     @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM offer WHERE offer_id=?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);

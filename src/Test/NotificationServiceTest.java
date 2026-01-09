@@ -31,7 +31,7 @@ public class NotificationServiceTest {
         notificationService = new NotificationService(new JdbcNotificationDAO());
         userService = new UserService(new JdbcUserDAO());
 
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getInstance().getConnection()) {
             try (PreparedStatement psUser = conn.prepareStatement(
                     "INSERT INTO user (name, password, role_type, email) VALUES (?, ?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -50,7 +50,7 @@ public class NotificationServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM notifications WHERE user_id = " + testUserId);

@@ -21,7 +21,7 @@ public class FavoriteItemServiceTest {
     void setUp() throws SQLException {
         favoriteItemService = new FavoriteItemService(new JdbcFavoriteItemDAO());
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM favorites");
@@ -41,7 +41,7 @@ public class FavoriteItemServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM favorites");

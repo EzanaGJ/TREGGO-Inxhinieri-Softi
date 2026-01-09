@@ -13,7 +13,7 @@ public class JdbcAddressDAO implements AddressDAO {
     public Address create(Address address) throws SQLException {
         String sql = "INSERT INTO addresses (user_id, city, postal_code, country, street) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, address.getUserId());
@@ -37,7 +37,7 @@ public class JdbcAddressDAO implements AddressDAO {
     public Address getAddressById(int id) throws SQLException {
         String sql = "SELECT * FROM addresses WHERE address_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -62,7 +62,7 @@ public class JdbcAddressDAO implements AddressDAO {
         String sql = "SELECT * FROM addresses WHERE user_id = ?";
         List<Address> list = new ArrayList<>();
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
@@ -86,7 +86,7 @@ public class JdbcAddressDAO implements AddressDAO {
     public Address update(Address address) throws SQLException {
         String sql = "UPDATE addresses SET city = ?, postal_code = ?, country = ?, street = ? WHERE address_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, address.getCity());
@@ -104,7 +104,7 @@ public class JdbcAddressDAO implements AddressDAO {
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM addresses WHERE address_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);

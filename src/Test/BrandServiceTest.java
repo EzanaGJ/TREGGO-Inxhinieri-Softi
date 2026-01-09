@@ -23,7 +23,7 @@ public class BrandServiceTest {
 
     @BeforeAll
     static void setup() throws Exception {
-        connection = DatabaseManager.getConnection();
+        connection = DatabaseManager.getInstance().getConnection();
         BrandDAO brandDAO = new JdbcBrandDAO();
         brandService = new BrandService(brandDAO.toString());
     }

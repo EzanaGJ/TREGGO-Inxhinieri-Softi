@@ -14,7 +14,7 @@ public class JdbcMessagesDAO implements MessagesDAO {
             VALUES (?, ?, ?, ?, ?)
         """;
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, m.getSenderId());
@@ -46,7 +46,7 @@ public class JdbcMessagesDAO implements MessagesDAO {
     public Messages getMessageById(int id) throws SQLException {
         String sql = "SELECT * FROM messages WHERE message_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -76,7 +76,7 @@ public class JdbcMessagesDAO implements MessagesDAO {
             WHERE message_id = ?
         """;
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, m.getContent());
@@ -96,7 +96,7 @@ public class JdbcMessagesDAO implements MessagesDAO {
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM messages WHERE message_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);

@@ -24,7 +24,7 @@ public class OfferServiceTest {
     void setup() throws SQLException {
         service = new OfferService(new JdbcOfferDAO());
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             // Create user
@@ -49,7 +49,7 @@ public class OfferServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM offer");

@@ -24,7 +24,7 @@ public class PaymentServiceTest {
     void setUp() throws SQLException {
         paymentService = new PaymentService(new JdbcPaymentDAO());
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             // CREATE USER
@@ -64,7 +64,7 @@ public class PaymentServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM payment");

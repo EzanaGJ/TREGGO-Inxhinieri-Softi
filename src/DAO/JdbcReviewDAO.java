@@ -14,7 +14,7 @@ public class JdbcReviewDAO implements ReviewDAO {
     public Review create(Review review) throws SQLException {
         String sql = "INSERT INTO review (reviewed_user_id, order_id, rating, comment) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, review.getReviewedUserId());
@@ -41,7 +41,7 @@ public class JdbcReviewDAO implements ReviewDAO {
     @Override
     public Review getById(int id) throws SQLException {
         String sql = "SELECT * FROM review WHERE review_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -55,7 +55,7 @@ public class JdbcReviewDAO implements ReviewDAO {
     public List<Review> getReviewsForUser(int userId) throws SQLException {
         List<Review> reviews = new ArrayList<>();
         String sql = "SELECT * FROM review WHERE reviewed_user_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
@@ -68,7 +68,7 @@ public class JdbcReviewDAO implements ReviewDAO {
     @Override
     public double getAverageRatingForUser(int userId) throws SQLException {
         String sql = "SELECT AVG(rating) FROM review WHERE reviewed_user_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
@@ -81,7 +81,7 @@ public class JdbcReviewDAO implements ReviewDAO {
     @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM review WHERE review_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);

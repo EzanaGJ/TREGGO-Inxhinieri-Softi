@@ -27,7 +27,7 @@ public class OrderServiceTest {
         OrderDAO orderDAO = new JdbcOrderDAO();
         orderService = new OrderService(orderDAO);
 
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getInstance().getConnection()) {
 
             // create unique user per test (prevents duplicate email error)
             try (PreparedStatement ps = conn.prepareStatement(
@@ -61,7 +61,7 @@ public class OrderServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getInstance().getConnection()) {
 
             try (PreparedStatement ps = conn.prepareStatement(
                     "DELETE FROM `order` WHERE user_id = ?")) {

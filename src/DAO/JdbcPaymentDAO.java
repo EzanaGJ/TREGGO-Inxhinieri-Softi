@@ -15,7 +15,7 @@ public class JdbcPaymentDAO implements PaymentDAO {
             VALUES (?, ?, ?, ?)
         """;
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, p.getOrderId());
@@ -38,7 +38,7 @@ public class JdbcPaymentDAO implements PaymentDAO {
     public Payment getPaymentById(int id) throws SQLException {
         String sql = "SELECT * FROM payment WHERE payment_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -68,7 +68,7 @@ public class JdbcPaymentDAO implements PaymentDAO {
             WHERE payment_id = ?
         """;
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, p.getMethod());
@@ -84,7 +84,7 @@ public class JdbcPaymentDAO implements PaymentDAO {
     @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM payment WHERE payment_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
