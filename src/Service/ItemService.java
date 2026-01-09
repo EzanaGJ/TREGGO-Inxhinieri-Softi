@@ -2,9 +2,11 @@ package Service;
 
 import DAO.ItemDAO;
 import Model.Item;
+import Model.Enum.ItemStatus;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ItemService {
 
@@ -44,7 +46,13 @@ public class ItemService {
         return itemDAO.getItemsByUserId(userId);
     }
 
-    public List<Item> getItemsByStatus(String status) {
-        return itemDAO.getItemsByStatus(status);
+    public List<Item> getItemsByStrategy(ItemFilterStrategy strategy) {
+        return itemDAO.getAllItems().stream()
+                .filter(strategy::filter)
+                .collect(Collectors.toList());
+    }
+
+    public List<Item> getItemsByStatus(ItemStatus status) {
+        return getItemsByStrategy(new StatusFilterStrategy(status));
     }
 }

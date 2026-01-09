@@ -17,6 +17,10 @@ public class Item {
     private String status;
     private Timestamp createdAt;
 
+    // No-arg constructor
+    public Item() {}
+
+    // Parameterized constructor
     public Item(Integer itemId, int userId, Integer categoryId, Integer brandId,
                 String title, String description, BigDecimal price, String size,
                 String condition, String image, String status, Timestamp createdAt) {
@@ -34,7 +38,7 @@ public class Item {
         this.createdAt = createdAt;
     }
 
-
+    // Getters
     public int getItemId() { return itemId; }
     public int getUserId() { return userId; }
     public Integer getCategoryId() { return categoryId; }
@@ -48,6 +52,7 @@ public class Item {
     public String getStatus() { return status; }
     public Timestamp getCreatedAt() { return createdAt; }
 
+    // Setters
     public void setItemId(int itemId) { this.itemId = itemId; }
     public void setUserId(int userId) { this.userId = userId; }
     public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
