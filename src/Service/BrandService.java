@@ -1,65 +1,57 @@
 package Service;
 
+import DAO.BrandDAO;
 import Model.Brand;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class BrandService {
 
-    public int brandId;
-    private String name;
+    private final BrandDAO brandDAO;
+    private final List<String> actions = new ArrayList<>();
 
-    // Constructor me ID (nga DB)
-    public BrandService(int brandId, String name) {
-        this.brandId = brandId;
-        this.name = name;
+    public BrandService(BrandDAO brandDAO) {
+        this.brandDAO = brandDAO;
     }
 
-    // Constructor pa ID (kur krijohet i ri)
-    public BrandService(String name) {
-        this.name = name;
+    public Brand createBrand(String name) throws SQLException {
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Brand name cannot be empty");
+
+        Brand brand = new Brand(name);
+        brandDAO.create(brand);
+
+        actions.add("CREATE_BRAND:" + brand.getBrandId());
+        return brand;
     }
 
-    // Getters
-    public int getBrandId() {
-        return brandId;
+    public Brand getBrandById(int id) throws SQLException {
+        actions.add("GET_BRAND:" + id);
+        return brandDAO.getById(id);
     }
 
-    public String getName() {
-        return name;
+    public List<Brand> getAllBrands() throws SQLException {
+        actions.add("GET_ALL_BRANDS");
+        return brandDAO.findAll();
     }
 
-    // Setters
-    public void setBrandId(int brandId) {
-        this.brandId = brandId;
+    public Brand updateBrand(Brand brand) throws SQLException {
+        if (brand == null)
+            throw new IllegalArgumentException("Brand cannot be null");
+
+        brandDAO.update(brand);
+        actions.add("UPDATE_BRAND:" + brand.getBrandId());
+        return brand;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void deleteBrand(int id) throws SQLException {
+        brandDAO.delete(id);
+        actions.add("DELETE_BRAND:" + id);
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public void createBrand(Brand brand) {
-    }
-
-    public Optional<Brand> getBrandById(int brandId) {
-        return Optional.empty();
-    }
-
-    public boolean updateBrand(Brand brand) {
-        return false;
-    }
-
-    public List<Brand> getAllBrands() {
-        return List.of();
-    }
-
-    public boolean deleteBrand(int brandId) {
-        return false;
+    public List<String> getActions() {
+        return List.copyOf(actions);
     }
 }

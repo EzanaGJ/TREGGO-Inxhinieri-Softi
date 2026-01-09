@@ -1,77 +1,64 @@
 package Test;
 
+import DAO.JdbcShipmentDAO;
+import DAO.ShipmentDAO;
 import Model.Shipment;
 import Service.ShipmentService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import java.util.List;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ShipmentServiceTest {
+public class ShipmentServiceTest {
 
     private ShipmentService shipmentService;
 
     @BeforeEach
     void setUp() {
-        shipmentService = new ShipmentService();
+        ShipmentDAO shipmentDAO = new JdbcShipmentDAO();
+        shipmentService = new ShipmentService(shipmentDAO);
     }
 
     @Test
-    void testCreateShipment() {
-        Shipment shipment = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
-        assertNotNull(shipment);
-        assertEquals(101, shipment.getOrderId());
-        assertEquals("TRACK123", shipment.getTrackingNumber());
-        assertEquals("Pending", shipment.getStatus());
+    void testCreateShipment() throws SQLException {
+        Shipment shipment = shipmentService.createShipment(
+                1, 1, "TRACK123", "DHL");
+
+        assertTrue(shipment.getShipmentId() > 0);
     }
 
     @Test
-    void testGetAllShipments() {
-        shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
-        shipmentService.createShipment(102, 202, "TRACK456", "FedEx", "Shipped");
+    void testGetShipmentById() throws SQLException {
+        Shipment shipment = shipmentService.createShipment(
+                1, 1, "TRACK456", "UPS");
 
-        List<Shipment> shipments = shipmentService.getAllShipments();
-        assertEquals(2, shipments.size());
+        Shipment fetched = shipmentService.getShipmentById(shipment.getShipmentId());
+
+        assertNotNull(fetched);
+        assertEquals("TRACK456", fetched.getTrackingNumber());
     }
 
     @Test
-    void testGetShipmentById() {
-        Shipment shipment1 = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
-        Shipment shipment2 = shipmentService.createShipment(102, 202, "TRACK456", "FedEx", "Shipped");
+    void testUpdateStatus() throws SQLException {
+        Shipment shipment = shipmentService.createShipment(
+                1, 1, "TRACK789", "FedEx");
 
-        Shipment found = shipmentService.getShipmentById(shipment1.getShipmentId());
-        assertNotNull(found);
-        assertEquals("TRACK123", found.getTrackingNumber());
+        shipmentService.updateStatus(shipment, "shipped");
 
-        Shipment notFound = shipmentService.getShipmentById(999);
-        assertNull(notFound);
+        boolean found = shipmentService.getActions()
+                .contains("UPDATE_STATUS:" + shipment.getShipmentId() + ":shipped");
+
+        assertTrue(found);
     }
 
     @Test
-    void testUpdateShipmentStatus() {
-        Shipment shipment = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
+    void testAssignDeliveryService() throws SQLException {
+        Shipment shipment = shipmentService.createShipment(
+                1, 1, "TRACK999", "Post");
 
-        boolean updated = shipmentService.updateShipmentStatus(shipment.getShipmentId(), "Delivered");
-        assertTrue(updated);
-        assertEquals("Delivered", shipmentService.getShipmentById(shipment.getShipmentId()).getStatus());
+        shipmentService.assignDeliveryService(shipment, "DHL");
 
-        // Test për shipment që nuk ekziston
-        boolean updateFail = shipmentService.updateShipmentStatus(999, "Lost");
-        assertFalse(updateFail);
-    }
-
-    @Test
-    void testDeleteShipment() {
-        Shipment shipment = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
-
-        boolean deleted = shipmentService.deleteShipment(shipment.getShipmentId());
-        assertTrue(deleted);
-        assertNull(shipmentService.getShipmentById(shipment.getShipmentId()));
-
-        // Test për shipment që nuk ekziston
-        boolean deleteFail = shipmentService.deleteShipment(999);
-        assertFalse(deleteFail);
+        assertEquals("DHL", shipment.getDeliveryService());
     }
 }

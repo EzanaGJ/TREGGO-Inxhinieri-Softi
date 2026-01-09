@@ -25,19 +25,17 @@ public class JdbcBrandDAO implements BrandDAO {
                 }
             }
         }
-
         return brand;
     }
 
     @Override
-    public Brand getBrandById(int id) throws SQLException {
+    public Brand getById(int id) throws SQLException {
         String sql = "SELECT brand_id, name FROM brand WHERE brand_id = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return new Brand(
@@ -47,18 +45,17 @@ public class JdbcBrandDAO implements BrandDAO {
                 }
             }
         }
-
         return null;
     }
 
     @Override
-    public List<Brand> getAllBrands() throws SQLException {
+    public List<Brand> findAll() throws SQLException {
         String sql = "SELECT brand_id, name FROM brand";
         List<Brand> brands = new ArrayList<>();
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 brands.add(new Brand(
@@ -67,7 +64,6 @@ public class JdbcBrandDAO implements BrandDAO {
                 ));
             }
         }
-
         return brands;
     }
 
@@ -82,24 +78,18 @@ public class JdbcBrandDAO implements BrandDAO {
             ps.setInt(2, brand.getBrandId());
             ps.executeUpdate();
         }
-
         return brand;
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public boolean delete(int id) throws SQLException {
         String sql = "DELETE FROM brand WHERE brand_id = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            ps.executeUpdate();
+            return ps.executeUpdate() > 0;
         }
     }
 }
-
-
-
-
-
