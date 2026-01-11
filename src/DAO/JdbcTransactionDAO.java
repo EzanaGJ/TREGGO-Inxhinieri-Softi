@@ -14,7 +14,7 @@ public class JdbcTransactionDAO implements TransactionDAO {
             VALUES (?, ?, ?)
         """;
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, t.getPaymentId());
