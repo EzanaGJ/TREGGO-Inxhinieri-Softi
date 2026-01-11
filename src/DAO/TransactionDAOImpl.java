@@ -40,5 +40,6 @@ public class TransactionDAOImpl implements TransactionDAO {
     @Override
     public void delete(int id) throws SQLException {
         storage.removeIf(t -> t.getTransactionId() == id);
+
     }
 }
