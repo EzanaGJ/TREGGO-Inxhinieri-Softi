@@ -23,7 +23,7 @@ public class UserServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn =DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM user WHERE email LIKE 'test_%@example.com'");

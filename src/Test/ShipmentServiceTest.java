@@ -1,11 +1,14 @@
 package Test;
 
+import DAO.JdbcShipmentDAO;
 import Model.Shipment;
 import Service.ShipmentService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import db.DatabaseManager;
+import org.junit.jupiter.api.*;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,64 +17,75 @@ class ShipmentServiceTest {
     private ShipmentService shipmentService;
 
     @BeforeEach
-    void setUp() {
-        shipmentService = new ShipmentService();
+    void setUp() throws SQLException {
+        shipmentService = new ShipmentService(new JdbcShipmentDAO());
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            // Insert dummy user (needed for order and address FK)
+            stmt.executeUpdate("INSERT IGNORE INTO user (user_id, name, password, email, role_type) VALUES (9999,'Test User','pass','test_user@example.com','USER')");
+
+            // Insert dummy address
+            stmt.executeUpdate("INSERT IGNORE INTO addresses (address_id, user_id, city, street, postal_code, country) VALUES (9999,9999,'TestCity','TestStreet','12345','TestCountry')");
+
+            // Insert dummy order
+            stmt.executeUpdate("INSERT IGNORE INTO `order` (order_id, user_id, address_id, status) VALUES (9999,9999,9999,'pending')");
+        }
+    }
+
+    @AfterEach
+    void tearDown() throws SQLException {
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            // Clean up shipments
+            stmt.executeUpdate("DELETE FROM shipment WHERE tracking_number LIKE 'TEST_%'");
+
+            // Clean up dummy order, address, and user
+            stmt.executeUpdate("DELETE FROM `order` WHERE order_id=9999");
+            stmt.executeUpdate("DELETE FROM addresses WHERE address_id=9999");
+            stmt.executeUpdate("DELETE FROM user WHERE user_id=9999");
+        }
     }
 
     @Test
-    void testCreateShipment() {
-        Shipment shipment = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
-        assertNotNull(shipment);
-        assertEquals(101, shipment.getOrderId());
-        assertEquals("TRACK123", shipment.getTrackingNumber());
-        assertEquals("Pending", shipment.getStatus());
-    }
+    void testCreateAndFindShipment() throws SQLException {
+        Shipment s = shipmentService.createShipment(
+                9999, // order_id
+                9999, // address_id
+                "TEST_TRK123",
+                "DHL",
+                "pending"
+        );
 
-    @Test
-    void testGetAllShipments() {
-        shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
-        shipmentService.createShipment(102, 202, "TRACK456", "FedEx", "Shipped");
+        assertNotEquals(0, s.getShipmentId());
 
-        List<Shipment> shipments = shipmentService.getAllShipments();
-        assertEquals(2, shipments.size());
-    }
-
-    @Test
-    void testGetShipmentById() {
-        Shipment shipment1 = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
-        Shipment shipment2 = shipmentService.createShipment(102, 202, "TRACK456", "FedEx", "Shipped");
-
-        Shipment found = shipmentService.getShipmentById(shipment1.getShipmentId());
+        Shipment found = shipmentService.getShipmentById(s.getShipmentId());
         assertNotNull(found);
-        assertEquals("TRACK123", found.getTrackingNumber());
-
-        Shipment notFound = shipmentService.getShipmentById(999);
-        assertNull(notFound);
+        assertEquals("TEST_TRK123", found.getTrackingNumber());
+        assertEquals("pending", found.getStatus());
     }
 
     @Test
-    void testUpdateShipmentStatus() {
-        Shipment shipment = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
+    void testUpdateShipment() throws SQLException {
+        Shipment s = shipmentService.createShipment(9999, 9999, "TEST_TRK456", "UPS", "pending");
 
-        boolean updated = shipmentService.updateShipmentStatus(shipment.getShipmentId(), "Delivered");
-        assertTrue(updated);
-        assertEquals("Delivered", shipmentService.getShipmentById(shipment.getShipmentId()).getStatus());
+        shipmentService.updateShipment(s.getShipmentId(), "TEST_TRK789", "FedEx", "in_transit");
 
-        // Test për shipment që nuk ekziston
-        boolean updateFail = shipmentService.updateShipmentStatus(999, "Lost");
-        assertFalse(updateFail);
+        Shipment updated = shipmentService.getShipmentById(s.getShipmentId());
+        assertEquals("TEST_TRK789", updated.getTrackingNumber());
+        assertEquals("FedEx", updated.getDeliveryService());
+        assertEquals("in_transit", updated.getStatus());
     }
 
     @Test
-    void testDeleteShipment() {
-        Shipment shipment = shipmentService.createShipment(101, 201, "TRACK123", "DHL", "Pending");
+    void testDeleteShipment() throws SQLException {
+        Shipment s = shipmentService.createShipment(9999, 9999, "TEST_TRK999", "DHL", "pending");
 
-        boolean deleted = shipmentService.deleteShipment(shipment.getShipmentId());
-        assertTrue(deleted);
-        assertNull(shipmentService.getShipmentById(shipment.getShipmentId()));
+        shipmentService.deleteShipment(s.getShipmentId());
 
-        // Test për shipment që nuk ekziston
-        boolean deleteFail = shipmentService.deleteShipment(999);
-        assertFalse(deleteFail);
+        Shipment found = shipmentService.getShipmentById(s.getShipmentId());
+        assertNull(found);
     }
 }

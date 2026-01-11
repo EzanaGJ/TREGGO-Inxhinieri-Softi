@@ -1,54 +1,44 @@
 package Service;
 
+import DAO.ShipmentDAO;
 import Model.Shipment;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.sql.SQLException;
 
 public class ShipmentService {
 
-    private List<Shipment> shipments;
-    private int nextId;
+    private final ShipmentDAO shipmentDao;
 
-    public ShipmentService() {
-        this.shipments = new ArrayList<>();
-        this.nextId = 1; // ID e parë
+    public ShipmentService(ShipmentDAO shipmentDao) {
+        this.shipmentDao = shipmentDao;
     }
 
-    // Krijo një shipment të ri
-    public Shipment createShipment(int orderId, int addressId, String trackingNumber,
-                                   String deliveryService, String status) {
-        Shipment shipment = new Shipment(nextId, orderId, addressId, trackingNumber, deliveryService, status);
-        shipments.add(shipment);
-        nextId++; // rrit ID për shipment-in tjetër
+    public Shipment createShipment(int orderId, int addressId, String trackingNumber, String deliveryService, String status) throws SQLException {
+        if (orderId <= 0) throw new IllegalArgumentException("Order ID must be valid");
+        if (addressId <= 0) throw new IllegalArgumentException("Address ID must be valid");
+        if (status == null || status.isBlank()) throw new IllegalArgumentException("Status cannot be empty");
+
+        Shipment shipment = new Shipment(orderId, addressId, trackingNumber, deliveryService, status);
+        shipmentDao.create(shipment);
         return shipment;
     }
 
-    // Merr të gjithë shipment-et
-    public List<Shipment> getAllShipments() {
-        return new ArrayList<>(shipments); // kthe një kopje për siguri
+    public Shipment getShipmentById(int id) throws SQLException {
+        return shipmentDao.getShipmentById(id);
     }
 
-    // Merr shipment sipas ID-së
-    public Shipment getShipmentById(int shipmentId) {
-        Optional<Shipment> shipment = shipments.stream()
-                .filter(s -> s.getShipmentId() == shipmentId)
-                .findFirst();
-        return shipment.orElse(null);
-    }
-
-    // Përditëso statusin e një shipment-i
-    public boolean updateShipmentStatus(int shipmentId, String newStatus) {
-        Shipment shipment = getShipmentById(shipmentId);
+    public void updateShipment(int id, String trackingNumber, String deliveryService, String status) throws SQLException {
+        Shipment shipment = shipmentDao.getShipmentById(id);
         if (shipment != null) {
-            shipment.setStatus(newStatus);
-            return true;
+            if (trackingNumber != null && !trackingNumber.isBlank()) shipment.setTrackingNumber(trackingNumber);
+            if (deliveryService != null && !deliveryService.isBlank()) shipment.setDeliveryService(deliveryService);
+            if (status != null && !status.isBlank()) shipment.setStatus(status);
+
+            shipmentDao.update(shipment);
         }
-        return false;
     }
 
-    // Fshi një shipment
-    public boolean deleteShipment(int shipmentId) {
-        return shipments.removeIf(s -> s.getShipmentId() == shipmentId);
+    public void deleteShipment(int id) throws SQLException {
+        shipmentDao.delete(id);
     }
 }

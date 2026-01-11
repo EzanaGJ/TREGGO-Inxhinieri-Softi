@@ -1,65 +1,49 @@
 package Service;
 
+import DAO.BrandDAO;
 import Model.Brand;
 
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public class BrandService {
+    private final BrandDAO brandDAO;
 
-    public int brandId;
-    private String name;
-
-    // Constructor me ID (nga DB)
-    public BrandService(int brandId, String name) {
-        this.brandId = brandId;
-        this.name = name;
+    public BrandService(BrandDAO brandDAO) {
+        this.brandDAO = brandDAO;
     }
 
-    // Constructor pa ID (kur krijohet i ri)
-    public BrandService(String name) {
-        this.name = name;
+    public Brand createBrand(String name) throws SQLException {
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Brand name cannot be empty");
+
+        Brand existing = brandDAO.getBrandByName(name);
+        if (existing != null)
+            throw new IllegalArgumentException("Brand already exists");
+
+        return brandDAO.create(new Brand(name));
     }
 
-    // Getters
-    public int getBrandId() {
-        return brandId;
+    public Brand getBrandById(int id) throws SQLException {
+        return brandDAO.getBrandById(id);
     }
 
-    public String getName() {
-        return name;
+    public Brand updateBrand(int id, String newName) throws SQLException {
+        Brand brand = brandDAO.getBrandById(id);
+        if (brand == null)
+            throw new IllegalArgumentException("Brand not found");
+
+        if (newName != null && !newName.isBlank())
+            brand.setName(newName);
+
+        return brandDAO.update(brand);
     }
 
-    // Setters
-    public void setBrandId(int brandId) {
-        this.brandId = brandId;
+    public void deleteBrand(int id) throws SQLException {
+        brandDAO.delete(id);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public void createBrand(Brand brand) {
-    }
-
-    public Optional<Brand> getBrandById(int brandId) {
-        return Optional.empty();
-    }
-
-    public boolean updateBrand(Brand brand) {
-        return false;
-    }
-
-    public List<Brand> getAllBrands() {
-        return List.of();
-    }
-
-    public boolean deleteBrand(int brandId) {
-        return false;
+    public List<Brand> getAllBrands() throws SQLException {
+        return brandDAO.getAllBrands();
     }
 }

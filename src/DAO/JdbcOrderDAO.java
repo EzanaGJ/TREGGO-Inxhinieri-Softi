@@ -13,7 +13,7 @@ public class JdbcOrderDAO implements OrderDAO {
     public Order create(Order order) throws SQLException {
         String sql = "INSERT INTO `order` (user_id, address_id, status) VALUES (?, ?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, order.getUserId());
@@ -35,7 +35,7 @@ public class JdbcOrderDAO implements OrderDAO {
     public Order getOrderById(int id) throws SQLException {
         String sql = "SELECT order_id, user_id, address_id, status, created_at FROM `order` WHERE order_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -60,7 +60,7 @@ public class JdbcOrderDAO implements OrderDAO {
         String sql = "SELECT order_id, user_id, address_id, status, created_at FROM `order` WHERE user_id = ?";
         List<Order> orders = new ArrayList<>();
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
@@ -85,7 +85,7 @@ public class JdbcOrderDAO implements OrderDAO {
         String sql = "SELECT order_id, user_id, address_id, status, created_at FROM `order`";
         List<Order> orders = new ArrayList<>();
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -107,7 +107,7 @@ public class JdbcOrderDAO implements OrderDAO {
     public Order update(Order order) throws SQLException {
         String sql = "UPDATE `order` SET user_id = ?, address_id = ?, status = ? WHERE order_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, order.getUserId());
@@ -124,7 +124,7 @@ public class JdbcOrderDAO implements OrderDAO {
     public boolean delete(int id) throws SQLException {
         String sql = "DELETE FROM `order` WHERE order_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -137,7 +137,7 @@ public class JdbcOrderDAO implements OrderDAO {
     public boolean updateStatus(int orderId, String status) throws SQLException {
         String sql = "UPDATE `order` SET status = ? WHERE order_id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, status);

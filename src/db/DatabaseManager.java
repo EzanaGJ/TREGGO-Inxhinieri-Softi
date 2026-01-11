@@ -31,7 +31,7 @@ public class DatabaseManager {
         return instance;
     }
 
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
                 properties.getProperty("db.url"),
                 properties.getProperty("db.user"),
