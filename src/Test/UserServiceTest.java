@@ -23,13 +23,12 @@ public class UserServiceTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        try (Connection conn =DatabaseManager.getInstance().getConnection();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("DELETE FROM user WHERE email LIKE 'test_%@example.com'");
         }
     }
-
 
     @Test
     void testCreateAndFindUser() throws SQLException {
@@ -46,36 +45,40 @@ public class UserServiceTest {
 
     @Test
     void testCreateUserWithNoName() {
-        try {
-            userService.createUser("", "pass", "USER", "test_1@example.com");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-        } catch (SQLException e) {
-            fail("Unexpected SQLException");
-        }
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.createUser("", "pass", "USER", "test_1@example.com"));
     }
 
     @Test
     void testCreateUserWithNoPassword() {
-        try {
-            userService.createUser("Name", "", "USER", "test_2@example.com");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-        } catch (SQLException e) {
-            fail("Unexpected SQLException");
-        }
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.createUser("Name", "", "USER", "test_2@example.com"));
     }
 
     @Test
     void testCreateUserWithNoEmail() {
-        try {
-            userService.createUser("Name", "pass", "USER", "");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-        } catch (SQLException e) {
-            fail("Unexpected SQLException");
-        }
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.createUser("Name", "pass", "USER", ""));
     }
+
+    @Test
+    void testCreateUserWithNullName() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.createUser(null, "pass", "USER", "test_null@example.com"));
+    }
+
+    @Test
+    void testCreateUserWithNullPassword() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.createUser("Name", null, "USER", "test_null2@example.com"));
+    }
+
+    @Test
+    void testCreateUserWithNullEmail() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.createUser("Name", "pass", "USER", null));
+    }
+
     @Test
     void testGetUserById() throws SQLException {
         User u = userService.createUser("TestUser", "pass123", "USER", "test_user@example.com");
@@ -87,7 +90,6 @@ public class UserServiceTest {
         assertEquals("TestUser", found.getName());
         assertEquals("test_user@example.com", found.getEmail());
     }
-
 
     @Test
     void testGetUserNotFound() throws SQLException {
@@ -132,7 +134,6 @@ public class UserServiceTest {
         userService.updateUser(999999, "X", "Y", "Z@example.com");
     }
 
-
     @Test
     void testDeleteUser() throws SQLException {
         User u = userService.createUser(
@@ -143,7 +144,6 @@ public class UserServiceTest {
         User found = userService.getUserById(u.getUserId());
         assertNull(found);
     }
-
 
     @Test
     void testListProductAndPayment() throws SQLException {
@@ -158,41 +158,81 @@ public class UserServiceTest {
         assertTrue(actions.contains("LIST_PRODUCT:" + u.getUserId() + ":Cool Shirt"));
         assertTrue(actions.contains("MAKE_PAYMENT:" + u.getUserId() + ":49.99"));
     }
+
+    @Test
+    void testListProductWithNullProductName() throws SQLException {
+        User u = userService.createUser("Prod", "pass", "USER", "test_prod@example.com");
+
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.listProduct(u, null));
+    }
+
+    @Test
+    void testListProductWithEmptyProductName() throws SQLException {
+        User u = userService.createUser("Prod2", "pass", "USER", "test_prod2@example.com");
+
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.listProduct(u, ""));
+    }
+
+    @Test
+    void testMakePaymentZeroAmount() throws SQLException {
+        User u = userService.createUser("Pay", "pass", "USER", "test_pay@example.com");
+
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.makePayment(u, 0));
+    }
+
+    @Test
+    void testMakePaymentNegativeAmount() throws SQLException {
+        User u = userService.createUser("Pay2", "pass", "USER", "test_pay2@example.com");
+
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.makePayment(u, -10));
+    }
+
     @Test
     void testLoginSuccess() throws SQLException {
         User u = userService.createUser("LoginUser", "mypassword", "USER", "test_login@example.com");
 
-        try {
-            User loggedIn = userService.login("test_login@example.com", "mypassword");
-            assertNotNull(loggedIn);
-            assertEquals(u.getUserId(), loggedIn.getUserId());
+        User loggedIn = userService.login("test_login@example.com", "mypassword");
+        assertNotNull(loggedIn);
+        assertEquals(u.getUserId(), loggedIn.getUserId());
 
-            var actions = userService.getActions();
-            assertTrue(actions.contains("LOGIN:" + u.getUserId()));
-        } catch (IllegalArgumentException e) {
-            fail("Login should have succeeded but threw exception: " + e.getMessage());
-        }
+        var actions = userService.getActions();
+        assertTrue(actions.contains("LOGIN:" + u.getUserId()));
     }
 
     @Test
     void testLoginWrongPassword() throws SQLException {
         userService.createUser("LoginUser2", "mypassword", "USER", "test_login2@example.com");
 
-        try {
-            userService.login("test_login2@example.com", "wrongpass");
-            fail("Expected IllegalArgumentException for wrong password");
-        } catch (IllegalArgumentException e) {
-
-        }
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.login("test_login2@example.com", "wrongpass"));
     }
 
     @Test
-    void testLoginEmailNotFound() throws SQLException {
-        try {
-            userService.login("nonexistent@example.com", "pass");
-            fail("Expected IllegalArgumentException for non-existing email");
-        } catch (IllegalArgumentException e) {
-        }
+    void testLoginEmailNotFound() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.login("nonexistent@example.com", "pass"));
+    }
+
+    @Test
+    void testLoginWithNullEmail() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.login(null, "pass"));
+    }
+
+    @Test
+    void testLoginWithNullPassword() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.login("test@example.com", null));
+    }
+
+    @Test
+    void testLoginWithEmptyPassword() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.login("test@example.com", ""));
     }
 
     @Test
@@ -205,4 +245,10 @@ public class UserServiceTest {
         assertTrue(actions.contains("LOGOUT:" + u.getUserId()));
     }
 
+    @Test
+    void testLogoutWithNullUser() {
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.logout(null));
+    }
 }
+

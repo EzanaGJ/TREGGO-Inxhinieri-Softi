@@ -9,7 +9,6 @@ import db.DatabaseManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +18,6 @@ import java.sql.Statement;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReviewServiceTest {
 
@@ -35,10 +33,10 @@ public class ReviewServiceTest {
 
         try (Connection conn = DatabaseManager.getInstance().getConnection()) {
 
-
             try (PreparedStatement psUser = conn.prepareStatement(
                     "INSERT INTO user (name, password, role_type, email) VALUES (?, ?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS)) {
+
                 psUser.setString(1, "Ezana");
                 psUser.setString(2, "pass123");
                 psUser.setString(3, "USER");
@@ -46,15 +44,16 @@ public class ReviewServiceTest {
                 psUser.executeUpdate();
 
                 try (ResultSet rs = psUser.getGeneratedKeys()) {
-                    if (rs.next()) testUserId = rs.getInt(1);
+                    rs.next();
+                    testUserId = rs.getInt(1);
                 }
             }
-
 
             int testAddressId;
             try (PreparedStatement psAddr = conn.prepareStatement(
                     "INSERT INTO addresses (user_id, street, city, postal_code, country) VALUES (?, ?, ?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS)) {
+
                 psAddr.setInt(1, testUserId);
                 psAddr.setString(2, "123 Review St");
                 psAddr.setString(3, "Tirana");
@@ -68,10 +67,10 @@ public class ReviewServiceTest {
                 }
             }
 
-
             try (PreparedStatement psOrder = conn.prepareStatement(
                     "INSERT INTO `order` (user_id, address_id, status) VALUES (?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS)) {
+
                 psOrder.setInt(1, testUserId);
                 psOrder.setInt(2, testAddressId);
                 psOrder.setString(3, "pending");
@@ -90,10 +89,7 @@ public class ReviewServiceTest {
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              Statement stmt = conn.createStatement()) {
 
-
             stmt.executeUpdate("DELETE FROM review WHERE reviewed_user_id = " + testUserId);
-
-
             stmt.executeUpdate("DELETE FROM `order` WHERE order_id = " + testOrderId);
             stmt.executeUpdate("DELETE FROM addresses WHERE user_id = " + testUserId);
             stmt.executeUpdate("DELETE FROM user WHERE user_id = " + testUserId);
@@ -103,40 +99,34 @@ public class ReviewServiceTest {
     @Test
     void testCreateAndGetReview() throws SQLException {
         Review r = reviewService.createReview(testUserId, testOrderId, 5, "Excellent seller!");
-        Assertions.assertNotEquals(0, r.getReviewId());
+        assertNotEquals(0, r.getReviewId());
 
         Review found = reviewService.getReviewById(r.getReviewId());
-        Assertions.assertNotNull(found);
-        Assertions.assertEquals(testUserId, found.getReviewedUserId());
-        Assertions.assertEquals(testOrderId, found.getOrderId());
-        Assertions.assertEquals(5, found.getRating());
-        Assertions.assertEquals("Excellent seller!", found.getComment());
+        assertNotNull(found);
+        assertEquals(testUserId, found.getReviewedUserId());
+        assertEquals(testOrderId, found.getOrderId());
+        assertEquals(5, found.getRating());
+        assertEquals("Excellent seller!", found.getComment());
     }
+
     @Test
     void testCreateReviewInvalidRatingTooLow() {
-        try {
-            reviewService.createReview(testUserId, testOrderId, 0, "Bad rating");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-        } catch (SQLException e) {
-            fail("Unexpected SQLException");
-        }
+        assertThrows(IllegalArgumentException.class, () ->
+                reviewService.createReview(testUserId, testOrderId, 0, "Bad rating"));
     }
+
+    @Test
+    void testCreateReviewInvalidRatingTooHigh() {
+        assertThrows(IllegalArgumentException.class, () ->
+                reviewService.createReview(testUserId, testOrderId, 6, "High rating"));
+    }
+
     @Test
     void testGetReviewByIdNonExisting() throws SQLException {
         Review found = reviewService.getReviewById(999999);
         assertNull(found);
     }
-    @Test
-    void testCreateReviewInvalidRatingTooHigh() {
-        try {
-            reviewService.createReview(testUserId, testOrderId, 6, "High rating");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-        } catch (SQLException e) {
-            fail("Unexpected SQLException");
-        }
-    }
+
     @Test
     void testGetReviewById() throws SQLException {
         Review r = reviewService.createReview(testUserId, testOrderId, 5, "Excellent seller!");
@@ -150,18 +140,14 @@ public class ReviewServiceTest {
         assertEquals(r.getRating(), found.getRating());
         assertEquals(r.getComment(), found.getComment());
     }
-    @Test
-    void testGetReviewByIdNotFound() throws SQLException {
-        Review r = reviewService.getReviewById(999999);
-        assertNull(r);
-    }
+
     @Test
     void testDeleteReview() throws SQLException {
         Review r = reviewService.createReview(testUserId, testOrderId, 2, "Not good");
         reviewService.deleteReview(r.getReviewId());
 
         Review found = reviewService.getReviewById(r.getReviewId());
-        Assertions.assertNull(found);
+        assertNull(found);
     }
 
     @Test
@@ -170,8 +156,9 @@ public class ReviewServiceTest {
         reviewService.createReview(testUserId, testOrderId, 5, "Very good");
 
         List<Review> reviews = reviewService.getReviewsForUser(testUserId);
-        Assertions.assertEquals(2, reviews.size());
+        assertEquals(2, reviews.size());
     }
+
     @Test
     void testGetReviewsForUserNoReviews() throws SQLException {
         List<Review> reviews = reviewService.getReviewsForUser(testUserId);
@@ -184,6 +171,40 @@ public class ReviewServiceTest {
         reviewService.createReview(testUserId, testOrderId, 5, "Excellent");
 
         double avg = reviewService.getUserRating(testUserId);
-        Assertions.assertEquals(4.0, avg);
+        assertEquals(4.0, avg);
+    }
+
+    @Test
+    void testCreateReviewRatingLowerBoundary() throws SQLException {
+        Review r = reviewService.createReview(testUserId, testOrderId, 1, "Minimum rating");
+        assertEquals(1, r.getRating());
+    }
+
+    @Test
+    void testCreateReviewRatingUpperBoundary() throws SQLException {
+        Review r = reviewService.createReview(testUserId, testOrderId, 5, "Maximum rating");
+        assertEquals(5, r.getRating());
+    }
+
+    @Test
+    void testGetAverageRatingNoReviews() throws SQLException {
+        double avg = reviewService.getUserRating(testUserId);
+        assertEquals(0.0, avg);
+    }
+
+    @Test
+    void testDeleteNonExistingReview() {
+        assertDoesNotThrow(() ->
+                reviewService.deleteReview(999999));
+    }
+
+    @Test
+    void testGetReviewsForUserMultipleCalls() throws SQLException {
+        reviewService.createReview(testUserId, testOrderId, 3, "Ok");
+
+        List<Review> reviews1 = reviewService.getReviewsForUser(testUserId);
+        List<Review> reviews2 = reviewService.getReviewsForUser(testUserId);
+
+        assertEquals(reviews1.size(), reviews2.size());
     }
 }
