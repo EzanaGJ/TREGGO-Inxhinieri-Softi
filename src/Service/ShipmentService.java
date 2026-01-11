@@ -4,59 +4,41 @@ import DAO.ShipmentDAO;
 import Model.Shipment;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShipmentService {
 
-    private final ShipmentDAO shipmentDAO;
-    private final List<String> actions = new ArrayList<>();
+    private final ShipmentDAO shipmentDao;
 
-    public ShipmentService(ShipmentDAO shipmentDAO) {
-        this.shipmentDAO = shipmentDAO;
+    public ShipmentService(ShipmentDAO shipmentDao) {
+        this.shipmentDao = shipmentDao;
     }
 
-    public Shipment createShipment(int orderId, int addressId,
-                                   String tracking, String service) throws SQLException {
+    public Shipment createShipment(int orderId, int addressId, String trackingNumber, String deliveryService, String status) throws SQLException {
+        if (orderId <= 0) throw new IllegalArgumentException("Order ID must be valid");
+        if (addressId <= 0) throw new IllegalArgumentException("Address ID must be valid");
+        if (status == null || status.isBlank()) throw new IllegalArgumentException("Status cannot be empty");
 
-        if (orderId <= 0 || addressId <= 0)
-            throw new IllegalArgumentException("IDs must be positive");
-
-        Shipment shipment = new Shipment(
-                orderId,
-                addressId,
-                tracking,
-                service,
-                "created"
-        );
-
-        shipmentDAO.create(shipment);
-        actions.add("CREATE_SHIPMENT:" + shipment.getShipmentId());
+        Shipment shipment = new Shipment(orderId, addressId, trackingNumber, deliveryService, status);
+        shipmentDao.create(shipment);
         return shipment;
     }
 
     public Shipment getShipmentById(int id) throws SQLException {
-        actions.add("GET_SHIPMENT:" + id);
-        return shipmentDAO.getById(id);
+        return shipmentDao.getShipmentById(id);
     }
 
-    public void updateStatus(Shipment shipment, String status) throws SQLException {
-        if (shipment == null)
-            throw new IllegalArgumentException("Shipment cannot be null");
+    public void updateShipment(int id, String trackingNumber, String deliveryService, String status) throws SQLException {
+        Shipment shipment = shipmentDao.getShipmentById(id);
+        if (shipment != null) {
+            if (trackingNumber != null && !trackingNumber.isBlank()) shipment.setTrackingNumber(trackingNumber);
+            if (deliveryService != null && !deliveryService.isBlank()) shipment.setDeliveryService(deliveryService);
+            if (status != null && !status.isBlank()) shipment.setStatus(status);
 
-        shipmentDAO.updateStatus(shipment.getShipmentId(), status);
-        actions.add("UPDATE_STATUS:" + shipment.getShipmentId() + ":" + status);
+            shipmentDao.update(shipment);
+        }
     }
 
-    public void assignDeliveryService(Shipment shipment, String service) {
-        if (shipment == null)
-            throw new IllegalArgumentException("Shipment cannot be null");
-
-        shipment.setDeliveryService(service);
-        actions.add("ASSIGN_SERVICE:" + shipment.getShipmentId() + ":" + service);
-    }
-
-    public List<String> getActions() {
-        return List.copyOf(actions);
+    public void deleteShipment(int id) throws SQLException {
+        shipmentDao.delete(id);
     }
 }

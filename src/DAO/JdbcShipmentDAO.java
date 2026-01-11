@@ -4,18 +4,12 @@ import Model.Shipment;
 import db.DatabaseManager;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JdbcShipmentDAO implements ShipmentDAO {
 
     @Override
     public Shipment create(Shipment shipment) throws SQLException {
-        String sql = """
-                INSERT INTO shipment 
-                (order_id, address_id, tracking_number, delivery_service, status)
-                VALUES (?, ?, ?, ?, ?)
-                """;
+        String sql = "INSERT INTO shipment (order_id, address_id, tracking_number, delivery_service, status) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -25,6 +19,7 @@ public class JdbcShipmentDAO implements ShipmentDAO {
             ps.setString(3, shipment.getTrackingNumber());
             ps.setString(4, shipment.getDeliveryService());
             ps.setString(5, shipment.getStatus());
+
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -33,17 +28,13 @@ public class JdbcShipmentDAO implements ShipmentDAO {
                 }
             }
         }
+
         return shipment;
     }
 
     @Override
-    public Shipment getById(int id) throws SQLException {
-        String sql = """
-                SELECT shipment_id, order_id, address_id,
-                       tracking_number, delivery_service, status
-                FROM shipment
-                WHERE shipment_id = ?
-                """;
+    public Shipment getShipmentById(int id) throws SQLException {
+        String sql = "SELECT shipment_id, order_id, address_id, tracking_number, delivery_service, status FROM shipment WHERE shipment_id = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -62,77 +53,37 @@ public class JdbcShipmentDAO implements ShipmentDAO {
                 }
             }
         }
+
         return null;
     }
 
     @Override
-    public List<Shipment> findAll() throws SQLException {
-        String sql = "SELECT * FROM shipment";
-        List<Shipment> shipments = new ArrayList<>();
-
-        try (Connection conn = DatabaseManager.getInstance().getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                shipments.add(new Shipment(
-                        rs.getInt("shipment_id"),
-                        rs.getInt("order_id"),
-                        rs.getInt("address_id"),
-                        rs.getString("tracking_number"),
-                        rs.getString("delivery_service"),
-                        rs.getString("status")
-                ));
-            }
-        }
-        return shipments;
-    }
-
-    @Override
     public Shipment update(Shipment shipment) throws SQLException {
-        String sql = """
-                UPDATE shipment
-                SET order_id = ?, address_id = ?, tracking_number = ?,
-                    delivery_service = ?, status = ?
-                WHERE shipment_id = ?
-                """;
+        String sql = "UPDATE shipment SET tracking_number = ?, delivery_service = ?, status = ? WHERE shipment_id = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, shipment.getOrderId());
-            ps.setInt(2, shipment.getAddressId());
-            ps.setString(3, shipment.getTrackingNumber());
-            ps.setString(4, shipment.getDeliveryService());
-            ps.setString(5, shipment.getStatus());
-            ps.setInt(6, shipment.getShipmentId());
+            ps.setString(1, shipment.getTrackingNumber());
+            ps.setString(2, shipment.getDeliveryService());
+            ps.setString(3, shipment.getStatus());
+            ps.setInt(4, shipment.getShipmentId());
+
             ps.executeUpdate();
         }
+
         return shipment;
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public void delete(int id) throws SQLException {
         String sql = "DELETE FROM shipment WHERE shipment_id = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    @Override
-    public boolean updateStatus(int shipmentId, String status) throws SQLException {
-        String sql = "UPDATE shipment SET status = ? WHERE shipment_id = ?";
-
-        try (Connection conn = DatabaseManager.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, status);
-            ps.setInt(2, shipmentId);
-            return ps.executeUpdate() > 0;
+            ps.executeUpdate();
         }
     }
 }
