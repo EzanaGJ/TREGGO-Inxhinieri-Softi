@@ -4,13 +4,10 @@ import DAO.BrandDAO;
 import Model.Brand;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BrandService {
-
     private final BrandDAO brandDAO;
-    private final List<String> actions = new ArrayList<>();
 
     public BrandService(BrandDAO brandDAO) {
         this.brandDAO = brandDAO;
@@ -20,38 +17,33 @@ public class BrandService {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Brand name cannot be empty");
 
-        Brand brand = new Brand(name);
-        brandDAO.create(brand);
+        Brand existing = brandDAO.getBrandByName(name);
+        if (existing != null)
+            throw new IllegalArgumentException("Brand already exists");
 
-        actions.add("CREATE_BRAND:" + brand.getBrandId());
-        return brand;
+        return brandDAO.create(new Brand(name));
     }
 
     public Brand getBrandById(int id) throws SQLException {
-        actions.add("GET_BRAND:" + id);
-        return brandDAO.getById(id);
+        return brandDAO.getBrandById(id);
     }
 
-    public List<Brand> getAllBrands() throws SQLException {
-        actions.add("GET_ALL_BRANDS");
-        return brandDAO.findAll();
-    }
-
-    public Brand updateBrand(Brand brand) throws SQLException {
+    public Brand updateBrand(int id, String newName) throws SQLException {
+        Brand brand = brandDAO.getBrandById(id);
         if (brand == null)
-            throw new IllegalArgumentException("Brand cannot be null");
+            throw new IllegalArgumentException("Brand not found");
 
-        brandDAO.update(brand);
-        actions.add("UPDATE_BRAND:" + brand.getBrandId());
-        return brand;
+        if (newName != null && !newName.isBlank())
+            brand.setName(newName);
+
+        return brandDAO.update(brand);
     }
 
     public void deleteBrand(int id) throws SQLException {
         brandDAO.delete(id);
-        actions.add("DELETE_BRAND:" + id);
     }
 
-    public List<String> getActions() {
-        return List.copyOf(actions);
+    public List<Brand> getAllBrands() throws SQLException {
+        return brandDAO.getAllBrands();
     }
 }

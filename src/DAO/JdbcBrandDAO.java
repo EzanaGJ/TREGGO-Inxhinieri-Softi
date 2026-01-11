@@ -25,46 +25,27 @@ public class JdbcBrandDAO implements BrandDAO {
                 }
             }
         }
+
         return brand;
     }
 
     @Override
-    public Brand getById(int id) throws SQLException {
+    public Brand getBrandById(int id) throws SQLException {
         String sql = "SELECT brand_id, name FROM brand WHERE brand_id = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Brand(
-                            rs.getInt("brand_id"),
-                            rs.getString("name")
-                    );
+                    return new Brand(rs.getInt("brand_id"), rs.getString("name"));
                 }
             }
         }
+
         return null;
-    }
-
-    @Override
-    public List<Brand> findAll() throws SQLException {
-        String sql = "SELECT brand_id, name FROM brand";
-        List<Brand> brands = new ArrayList<>();
-
-        try (Connection conn = DatabaseManager.getInstance().getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                brands.add(new Brand(
-                        rs.getInt("brand_id"),
-                        rs.getString("name")
-                ));
-            }
-        }
-        return brands;
     }
 
     @Override
@@ -78,18 +59,55 @@ public class JdbcBrandDAO implements BrandDAO {
             ps.setInt(2, brand.getBrandId());
             ps.executeUpdate();
         }
+
         return brand;
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public void delete(int id) throws SQLException {
         String sql = "DELETE FROM brand WHERE brand_id = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+            ps.executeUpdate();
         }
+    }
+
+    @Override
+    public List<Brand> getAllBrands() throws SQLException {
+        List<Brand> brands = new ArrayList<>();
+        String sql = "SELECT brand_id, name FROM brand";
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                brands.add(new Brand(rs.getInt("brand_id"), rs.getString("name")));
+            }
+        }
+
+        return brands;
+    }
+
+    @Override
+    public Brand getBrandByName(String name) throws SQLException {
+        String sql = "SELECT brand_id, name FROM brand WHERE name = ?";
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Brand(rs.getInt("brand_id"), rs.getString("name"));
+                }
+            }
+        }
+
+        return null;
     }
 }

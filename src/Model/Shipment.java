@@ -1,7 +1,6 @@
 package Model;
 
 public class Shipment {
-
     private int shipmentId;
     private int orderId;
     private int addressId;
@@ -9,9 +8,8 @@ public class Shipment {
     private String deliveryService;
     private String status;
 
-    // Constructor me ID (kur merret nga DB)
-    public Shipment(int shipmentId, int orderId, int addressId,
-                    String trackingNumber, String deliveryService, String status) {
+    // Constructor with shipmentId (for reading from DB)
+    public Shipment(int shipmentId, int orderId, int addressId, String trackingNumber, String deliveryService, String status) {
         this.shipmentId = shipmentId;
         this.orderId = orderId;
         this.addressId = addressId;
@@ -20,9 +18,8 @@ public class Shipment {
         this.status = status;
     }
 
-    // Constructor pa ID (kur krijohet e re)
-    public Shipment(int orderId, int addressId,
-                    String trackingNumber, String deliveryService, String status) {
+    // Constructor without shipmentId (for creating new shipment)
+    public Shipment(int orderId, int addressId, String trackingNumber, String deliveryService, String status) {
         this.orderId = orderId;
         this.addressId = addressId;
         this.trackingNumber = trackingNumber;
@@ -31,52 +28,18 @@ public class Shipment {
     }
 
     // Getters
-    public int getShipmentId() {
-        return shipmentId;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public int getAddressId() {
-        return addressId;
-    }
-
-    public String getTrackingNumber() {
-        return trackingNumber;
-    }
-
-    public String getDeliveryService() {
-        return deliveryService;
-    }
-
-    public String getStatus() {
-        return status;
-    }
+    public int getShipmentId() { return shipmentId; }
+    public int getOrderId() { return orderId; }
+    public int getAddressId() { return addressId; }
+    public String getTrackingNumber() { return trackingNumber; }
+    public String getDeliveryService() { return deliveryService; }
+    public String getStatus() { return status; }
 
     // Setters
-    public void setShipmentId(int shipmentId) {
-        this.shipmentId = shipmentId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public void setAddressId(int addressId) {
-        this.addressId = addressId;
-    }
-
-    public void setTrackingNumber(String trackingNumber) {
-        this.trackingNumber = trackingNumber;
-    }
-
-    public void setDeliveryService(String deliveryService) {
-        this.deliveryService = deliveryService;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setShipmentId(int shipmentId) { this.shipmentId = shipmentId; }
+    public void setOrderId(int orderId) { this.orderId = orderId; }
+    public void setAddressId(int addressId) { this.addressId = addressId; }
+    public void setTrackingNumber(String trackingNumber) { this.trackingNumber = trackingNumber; }
+    public void setDeliveryService(String deliveryService) { this.deliveryService = deliveryService; }
+    public void setStatus(String status) { this.status = status; }
 }
